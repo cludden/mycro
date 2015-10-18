@@ -12,5 +12,16 @@
     "restify"
   ],
   "author": "chris ludden",
-  "license": "MIT"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cludden/restify-micobial.git"
+  },
+  "dependencies": {
+    "async": "^1.4.2",
+    "include-all": "^0.1.6",
+    "lodash": "^3.10.1",
+    "restify": "^4.0.3",
+    "winston": "^1.1.1"
+  }
 }
