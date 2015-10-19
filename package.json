@@ -1,5 +1,5 @@
 {
-  "name": "microbial",
+  "name": "restify-microservice",
   "version": "0.0.0",
   "description": "a restify based microservice",
   "main": "index.js",
@@ -15,7 +15,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/cludden/restify-micobial.git"
+    "url": "https://github.com/cludden/restify-microservice.git"
   },
   "dependencies": {
     "async": "^1.4.2",
