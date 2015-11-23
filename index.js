@@ -1,24 +1,17 @@
 'use strict';
 
 var restify = require('restify'),
+    _ = require('lodash'),
     async = require('async');
 
-var Microbial = function(config) {
-    var self = this;
-    self._config = config || {};
-    self._version = require('./package.json').version;
-    self._ready = false;
+var Microservice = function(config) {
+    this._config = config || {};
+    this._version = require('./package.json').version;
+    this._ready = false;
     ['connections', 'controllers', 'models', 'policies', 'services', 'routes'].forEach(function(container) {
-        self[container] = {};
-    });
+        this[container] = {};
+    }.bind(this));
+    require('./lib/config').call(this);
 };
 
-Microbial.prototype.getConfig = require('./lib/config');
-
-Microbial.prototype.registerConnections = require('./lib/connections');
-
-Microbial.prototype.registerModels = require('./lib/models');
-
-Microbial.prototype.start = require('./lib/start');
-
-module.exports = Microbial;
+module.exports = Microservice;
