@@ -11,7 +11,7 @@ var Microservice = function(config) {
     ['connections', 'controllers', 'models', 'policies', 'services', 'routes'].forEach(function(container) {
         this[container] = {};
     }.bind(this));
-    require('./lib/config').call(this);
+    require('./lib/init').call(this);
 };
 
 module.exports = Microservice;
