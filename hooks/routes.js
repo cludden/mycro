@@ -11,6 +11,7 @@ var supportedMethods = ['del', 'get', 'head', 'post', 'put'],
 module.exports = function(cb) {
     var self = this;
     self.log('silly', '[routes] hook starting');
+    self.name = 'routes';
 
     var routes = {};
     try {
@@ -44,7 +45,7 @@ module.exports = function(cb) {
             // process handlers
             var length = handlers.length;
             handlers = _(handlers).map(function(handler, i) {
-                return processHandler.call(self, handler, (i === (length - 1)));
+                return processHandler(self, handler, (i === (length - 1)));
             }).compact().value();
 
             // define base route object
@@ -73,13 +74,13 @@ module.exports = function(cb) {
  * @param  {[boolean]} final - is this the final handler
  * @return {function|undefined}
  */
-function processHandler(handler, final) {
+function processHandler(microservice, handler, final) {
     if (_.isFunction(handler)) return handler;
 
     var container;
     if (_.isString(handler)) {
         container = final ? 'controllers' : 'policies';
-        return processStringHandler.call(this, handler, container);
+        return processStringHandler(microservice, handler, container);
     }
 
     if (_.isObject(handler)) {
@@ -94,9 +95,9 @@ function processHandler(handler, final) {
         //TODO extend request options with additional configuration
 
         handler = handler[container];
-        return processStringHandler.call(this, handler, container);
+        return processStringHandler(microservice, handler, container);
     }
-};
+}
 
 
 /**
@@ -106,12 +107,12 @@ function processHandler(handler, final) {
  * @param  {string} container - the container to search in
  * @return {function|undefined}
  */
-function processStringHandler(handler, container) {
+function processStringHandler(microservice, handler, container) {
     var path = handler.split('.'),
         name = path.shift();
 
     // lookup the handler in the appropriate container
-    handler = this[container][name];
+    handler = microservice[container][name];
 
     // if the located handler is an object, lookup the action
     if (handler && _.isObject(handler) && !_.isFunction(handler)) {

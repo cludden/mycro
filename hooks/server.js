@@ -7,6 +7,7 @@ var restify = require('restify'),
 module.exports = function(cb) {
     var self = this;
     self.log('silly', '[server] hook starting');
+    self.name = 'server';
 
     // store a reference to this restify
     self._restify = restify;

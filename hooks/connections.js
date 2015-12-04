@@ -6,6 +6,8 @@ var async = require('async'),
 module.exports = function(cb) {
     var self = this;
     self.log('silly', '[connections] starting hook');
+    self.name = 'connections';
+    self.connections = {};
 
     var connections = _.keys(this._config.connections);
     if (!connections.length) {

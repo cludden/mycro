@@ -7,6 +7,8 @@ var async = require('async'),
 module.exports = function(cb) {
     var self = this;
     self.log('silly', '[models] hook starting');
+    self.name = 'models';
+    self.models = {};
 
     var models = include({
         dirname: process.cwd() + '/app/models',

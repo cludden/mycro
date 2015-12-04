@@ -6,16 +6,18 @@ var async = require('async'),
 
 module.exports = function(cb) {
     var self = this;
-    self.log('silly', '[policies] hook starting');
+    self.log('silly', '[services] hook starting');
+    self.name = 'services';
+    self.services = {};
 
-    var policies = include({
-        dirname     :  process.cwd() + '/app/policies',
+    var controllers = include({
+        dirname     :  process.cwd() + '/app/services',
         filter      :  /(.+)\.js$/,
         excludeDirs :  /^\.(git|svn)$/,
         optional    :  true
     });
 
-    _.extend(self.policies, policies);
-    self.log('info', '[policies] hook complete');
+    _.extend(self.services, controllers);
+    self.log('info', '[services] hook complete');
     cb();
 };
