@@ -51,7 +51,7 @@ var Microservice = function(config) {
     self._config.hooks.forEach(function(hook) {
         if (_.isFunction(hook)) {
             self._hooks.push(hook);
-            self.log('silly', '[init] loading hook: ', hook);
+            self.log('silly', '[init] loading hook: ' + hook.name);
             return;
         }
 
@@ -73,7 +73,14 @@ var Microservice = function(config) {
         async.eachSeries(
             self._hooks,
             function(hook, fn) {
-                return hook.call(self, fn);
+                return hook.call(self, function(err) {
+                    if (err) {
+                        self.log('error', '[' + hook.name + ']', err);
+                        return fn(err);
+                    }
+                    self.log('info', '[' + hook.name + '] hook loaded successfully');
+                    fn();
+                });
             },
             function(err) {
                 // handle unexpected error

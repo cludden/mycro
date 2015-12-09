@@ -30,20 +30,25 @@ module.exports = function(cb) {
 
     // filter and sort middleware
     var middlewareConfig = self._config.server.middleware || [];
-    _(standardMiddlewares).pick(function(fn, name) {
-        return middlewareConfig.indexOf(name) !== -1;
-    }).pairs().sortBy(function(pair) {
-        return middlewareConfig.indexOf(pair[0]);
-    }).map(function(pair) {
-        self.log('silly', '[server] loading middleware: ' + pair[0]);
-        self.server.use(pair[1]);
-    }).value();
+    middlewareConfig.forEach(function(middleware) {
+        if (_.isFunction(middleware)) {
+            self.log('silly', '[server] loading middleware: ' + middleware.name);
+            return self.server.use(middleware(self));
+        }
+        if (_.isString(middleware)) {
+            var fn = standardMiddlewares[middleware];
+            if (_.isFunction(fn)) {
+                self.log('silly', '[server] loading middleware: ' + middleware);
+                return self.server.use(fn);
+            }
+        }
+    });
 
     // load custom middleware
     var custom = self._config.server.customMiddleware || [];
     if (custom.length) {
         custom.forEach(function(middleware) {
-            self.server.use(middleware);
+            self.server.use(middleware(self));
         });
         self.log('silly', '[server] custom middleware loaded');
     }

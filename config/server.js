@@ -3,6 +3,7 @@
 module.exports = {
     config: {},
     middleware: [
-        'request'
+        'request',
+        'request-all-params'
     ]
 };
