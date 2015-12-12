@@ -8,16 +8,15 @@ var async = require('async'),
 var supportedMethods = ['del', 'get', 'head', 'post', 'put'],
     configAttributes = ['middleware', 'version', 'name'];
 
-module.exports = function(cb) {
+module.exports = function Routes(cb) {
     var self = this;
-    self.log('silly', '[routes] hook starting');
-    self.name = 'routes';
 
     var routes = {};
     try {
-        routes = require(process.cwd() + '/app/routes')(self);
+        routes = require(process.cwd() + '/app/routes');
+        if (_.isFunction(routes)) routes = routes(self);
     } catch (err) {
-        self.log('info', '[routes] no routes found');
+        self.log('info', '[Routes] no routes found');
     }
 
     var defaultMiddleware = routes.middleware,
@@ -62,7 +61,6 @@ module.exports = function(cb) {
         });
     });
 
-    self.log('info', '[routes] hook complete');
     cb();
 };
 

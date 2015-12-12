@@ -4,10 +4,8 @@ var restify = require('restify'),
     _ = require('lodash'),
     include = require('include-all');
 
-module.exports = function(cb) {
+module.exports = function Server(cb) {
     var self = this;
-    self.log('silly', '[server] hook starting');
-    self.name = 'server';
 
     // store a reference to this restify
     self._restify = restify;
@@ -32,13 +30,13 @@ module.exports = function(cb) {
     var middlewareConfig = self._config.server.middleware || [];
     middlewareConfig.forEach(function(middleware) {
         if (_.isFunction(middleware)) {
-            self.log('silly', '[server] loading middleware: ' + middleware.name);
+            self.log('silly', '[Server] loading middleware: ' + middleware.name);
             return self.server.use(middleware(self));
         }
         if (_.isString(middleware)) {
             var fn = standardMiddlewares[middleware];
             if (_.isFunction(fn)) {
-                self.log('silly', '[server] loading middleware: ' + middleware);
+                self.log('silly', '[Server] loading middleware: ' + middleware);
                 return self.server.use(fn);
             }
         }
@@ -49,10 +47,9 @@ module.exports = function(cb) {
     if (custom.length) {
         custom.forEach(function(middleware) {
             self.server.use(middleware(self));
+            self.log('silly', '[Server] loading custom middleware: ' + middleware);
         });
-        self.log('silly', '[server] custom middleware loaded');
     }
 
-    self.log('info', '[server] hook complete');
     cb();
 };

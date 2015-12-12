@@ -4,10 +4,8 @@ var async = require('async'),
     include = require('include-all'),
     _ = require('lodash');
 
-module.exports = function(cb) {
+module.exports = function Models(cb) {
     var self = this;
-    self.log('silly', '[models] hook starting');
-    self.name = 'models';
     self.models = {};
 
     var models = include({
@@ -50,11 +48,7 @@ module.exports = function(cb) {
             fn();
         });
     }, function(err) {
-        if (err) {
-            self.log('error', '[models] error: ' + err);
-            return cb(err);
-        }
-        self.log('info', '[models] hook complete');
+        if (err) return cb(err);
         return cb();
     });
 };

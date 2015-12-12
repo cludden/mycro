@@ -29,13 +29,17 @@ var Microservice = function(config) {
         optional: true
     });
 
-    // initialize constructors
-    userConfig = _.mapValues(userConfig, function(constructor) {
-        if (typeof constructor === 'function') {
-            if (constructor.length === 1) return constructor(self);
-            return constructor();
-        }
-        return constructor;
+    // initialize any config files that export constructors
+    // note: if constructors expect a single argument, the microservice will be
+    // passed as the sole argument
+    [defaults, userConfig].forEach(function(config) {
+        config = _.mapValues(config, function(constructor) {
+            if (typeof constructor === 'function') {
+                if (constructor.length === 1) return constructor(self);
+                return constructor();
+            }
+            return constructor;
+        });
     });
 
     // create microservice config and store it on the service object

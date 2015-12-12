@@ -4,10 +4,8 @@ var async = require('async'),
     include = require('include-all'),
     _ = require('lodash');
 
-module.exports = function(cb) {
+module.exports = function Controllers(cb) {
     var self = this;
-    self.log('silly', '[controllers] hook starting');
-    self.name = 'controllers';
     self.controllers = {};
 
     var controllers = include({
@@ -18,6 +16,5 @@ module.exports = function(cb) {
     });
 
     _.extend(self.controllers, controllers);
-    self.log('info', '[controllers] hook complete');
     cb();
 };

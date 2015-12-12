@@ -4,10 +4,8 @@ var async = require('async'),
     include = require('include-all'),
     _ = require('lodash');
 
-module.exports = function(cb) {
+module.exports = function Policies(cb) {
     var self = this;
-    self.log('silly', '[policies] hook starting');
-    self.name = 'policies';
     self.policies = {};
 
     var policies = include({
@@ -18,6 +16,5 @@ module.exports = function(cb) {
     });
 
     _.extend(self.policies, policies);
-    self.log('info', '[policies] hook complete');
     cb();
 };

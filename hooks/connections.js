@@ -3,10 +3,8 @@
 var async = require('async'),
     _ = require('lodash');
 
-module.exports = function(cb) {
+module.exports = function Connections(cb) {
     var self = this;
-    self.log('silly', '[connections] starting hook');
-    self.name = 'connections';
     self.connections = {};
 
     var connections = _.keys(this._config.connections);
@@ -41,11 +39,7 @@ module.exports = function(cb) {
             fn();
         });
     }, function(err) {
-        if (err) {
-            self.log('error', '[connections] error: ' + err);
-            return cb(err);
-        }
-        self.log('info', '[connections] hook complete');
+        if (err) return cb(err);
         return cb();
     });
 };
