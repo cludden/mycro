@@ -79,7 +79,7 @@ module.exports = [
 ```
 
 ## Custom Hooks
-Implementing a custom hook is as easy as requiring a file/module that exports a function that accepts a single callback. The function is bound to `microservice` context, which allows you to manipulate any aspect of the `microservice`.
+Implementing a custom hook is as easy as requiring a file/module that exports a function that accepts a single callback. The function is bound to the `microservice` context, which allows you to manipulate any aspect of the `microservice`.
 ```javascript
 // in hooks/my-hook.js
 
@@ -110,7 +110,9 @@ module.exports = function(done) {
 
 
 ## Configuration
-`restify-microservice` assumes some basic configuration, outlined below. You can override this configuration by creating the appropriate config file in your `config/` folder.
+`restify-microservice` assumes some basic configuration, outlined below. You can override this configuration by creating the appropriate config file in your `config/` folder.  
+  
+*more docs coming soon*
 
 ## Installable Hooks
 To use these hooks, simply install them via `npm install --save <insert hook name here>` and require them in your `config/hooks.js` file.
