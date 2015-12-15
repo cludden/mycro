@@ -3,7 +3,7 @@
 var winston = require('winston');
 
 module.exports = {
-    level: 'silly',
+    level: 'trace',
     transports: [
         new (winston.transports.Console)({
             colorize: true
