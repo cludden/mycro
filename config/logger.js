@@ -2,4 +2,6 @@
 
 var winston = require('winston');
 
-module.exports = winston.Logger;
+module.exports = function() {
+    return winston.Logger;
+};

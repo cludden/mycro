@@ -6,7 +6,7 @@ var async = require('async'),
 
 // whitelist restify methods
 var supportedMethods = ['del', 'get', 'head', 'post', 'put'],
-    configAttributes = ['middleware', 'version', 'name'];
+    configAttributes = ['middleware', 'version', 'name', 'regex'];
 
 module.exports = function Routes(cb) {
     var self = this;
@@ -26,6 +26,11 @@ module.exports = function Routes(cb) {
     routes = _.omit(routes, configAttributes);
 
     _.each(routes, function(config, route) {
+        // handle regex routes
+        if (config.regex === true) {
+            route = new RegExp(route);
+        }
+
         var middleware = config.middleware || defaultMiddleware || [];
         _.each(_.omit(config, configAttributes), function(handlers, method) {
             // do nothing if method is not supported by restify
@@ -52,7 +57,9 @@ module.exports = function Routes(cb) {
                 path: route,
                 version: config.version || version,
                 name: (config.name || route) + ' (' + method.toUpperCase() + ')'
-            }, _.isEmpty);
+            }, function(value) {
+                return _.isEmpty(value) && !_.isRegExp(value);
+            });
 
             // create the route
             var args = [path].concat(handlers);

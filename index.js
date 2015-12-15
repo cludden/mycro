@@ -32,21 +32,27 @@ var Microservice = function(config) {
     // initialize any config files that export constructors
     // note: if constructors expect a single argument, the microservice will be
     // passed as the sole argument
-    [defaults, userConfig].forEach(function(config) {
-        config = _.mapValues(config, function(constructor) {
-            if (typeof constructor === 'function') {
-                if (constructor.length === 1) return constructor(self);
-                return constructor();
-            }
-            return constructor;
-        });
+    defaults = _.mapValues(defaults, function(constructor) {
+        if (typeof constructor === 'function') {
+            if (constructor.length === 1) return constructor(self);
+            return constructor();
+        }
+        return constructor;
     });
+    userConfig = _.mapValues(userConfig, function(constructor) {
+        if (typeof constructor === 'function') {
+            if (constructor.length === 1) return constructor(self);
+            return constructor();
+        }
+        return constructor;
+    });
+
 
     // create microservice config and store it on the service object
     self._config = _.defaults(_.extend(userConfig, self._config), defaults);
 
     // configure logger settings
-    self.logger = new self._config.logger(self._config.log || {level: process.env['NODE_ENV'] === 'production' ? 'none' : 'silly'});
+    self.logger = new self._config.logger(self._config.log);
     self.log = function() {
         return self.logger.log.apply(self.logger, Array.prototype.slice.call(arguments));
     };
