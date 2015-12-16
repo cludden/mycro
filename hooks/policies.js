@@ -9,10 +9,12 @@ module.exports = function Policies(cb) {
     self.policies = {};
 
     var policies = include({
-        dirname     :  process.cwd() + '/app/policies',
-        filter      :  /(.+)\.js$/,
-        excludeDirs :  /^\.(git|svn)$/,
-        optional    :  true
+        dirname:  process.cwd() + '/app/policies',
+        filter:  /(.+)\.js$/,
+        excludeDirs:  /^\.(git|svn)$/,
+        keepDirectoryPath: true,
+        flattenDirectories: true,
+        optional:  true
     });
 
     _.extend(self.policies, policies);

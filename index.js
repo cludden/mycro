@@ -95,12 +95,12 @@ var Microservice = function(config) {
             function(err) {
                 // handle unexpected error
                 if (err) return done(err);
+                if (!self.server || !self.server.listen || typeof self.server.listen !== 'function') return done();
 
                 // start the server
                 var port = parseInt(self._config.server.port || process.env['PORT']);
                 if (typeof port !== 'number') return done('Invalid port: ' + port);
                 self.server.listen(port);
-
                 done();
             }
         );

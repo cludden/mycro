@@ -1,5 +1,7 @@
 # restify-microservice
-a [restify.js](http://restify.com) based microservice library, inspired by [sails.js](http://sailsjs.org)
+a [restify.js](http://restify.com) based microservice library, inspired by [sails.js](http://sailsjs.org)  
+
+*Note: this is still a work in progress. There may be bugs in the code, and the api is subject to change. Also, better docs and more tests are coming. In the meantime, check out the dummy app in the /test directory*
 
 ## Install
 ```javascript
@@ -111,7 +113,7 @@ module.exports = function(done) {
 
 ## Configuration
 `restify-microservice` assumes some basic configuration, outlined below. You can override this configuration by creating the appropriate config file in your `config/` folder.  
-  
+
 *more docs coming soon*
 
 ## Installable Hooks
