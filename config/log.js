@@ -3,22 +3,18 @@
 var winston = require('winston');
 
 module.exports = {
-    level: 'trace',
+    level: 'silly',
     transports: [
         new (winston.transports.Console)({
             colorize: true
         })
     ],
     colors: {
-        trace: 'magenta',
-        input: 'grey',
-        verbose: 'cyan',
-        prompt: 'grey',
+        error: 'red',
+        warn: 'orange',
+        info: 'magenta',
+        verbose: 'green',
         debug: 'blue',
-        info: 'green',
-        data: 'grey',
-        help: 'cyan',
-        warn: 'yellow',
-        error: 'red'
+        silly: 'cyan'
     }
 };

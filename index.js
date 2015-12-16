@@ -54,7 +54,7 @@ var Microservice = function(config) {
     // configure logger settings
     self.logger = new self._config.logger(self._config.log);
     self.log = function() {
-        return self.logger.log.apply(self.logger, Array.prototype.slice.call(arguments));
+        self.logger.log.apply(self.logger, Array.prototype.slice.call(arguments));
     };
 
     self._hooks = [];

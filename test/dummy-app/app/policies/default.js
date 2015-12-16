@@ -1,6 +1,6 @@
 'use strict';
 
 module.exports = function(req, res, next) {
-    req.defaultMiddlewareWasRun = true;
+    res.set('X-Default-Middleware', 'true');
     next();
 };

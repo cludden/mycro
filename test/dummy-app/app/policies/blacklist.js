@@ -2,7 +2,7 @@
 
 module.exports = function(item) {
     return function(req, res, next) {
-        req.blacklist = [item];
+        res.set('X-Blacklisted-Item', item);
         next();
     };
 };

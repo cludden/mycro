@@ -5,13 +5,16 @@ module.exports = function(microservice) {
         middleware: [
             'default',
             function(req, res, next) {
-                req.microservice.log('trace', 'inline default middleware');
+                req.microservice.log('silly', 'inline default middleware');
                 next();
             }
         ],
 
-        '/api/greet/hello/:name': {
-            'get': 'greet.hello'
+        '/api/count': {
+            'get': {controller: 'count.getCount'},
+            'post': [
+                {controller: 'count.incrementCount'}
+            ]
         },
 
         '^\/api\/greet\/aloha\/(a-zA-Z)+': {
@@ -23,13 +26,17 @@ module.exports = function(microservice) {
             'post': 'greet.aloha'
         },
 
-        'v2.0.0': {
+        '/api/greet/hello/:name': {
+            'get': 'greet.hello'
+        },
+
+        '2.0.0': {
             '/api/greet/hello/:name': {
                 middleware: [
                     'authenticated',
-                    'blacklist'
+                    microservice.policies['blacklist']('mark')
                 ],
-                'get': 'greet.aloha'
+                'get': 'greet.hello'
             }
         }
     };
