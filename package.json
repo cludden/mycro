@@ -4,7 +4,7 @@
   "description": "a restify based microservice",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha test/index.test.js test/**/*.test.js"
   },
   "keywords": [
     "microbial",
@@ -24,5 +24,11 @@
     "merge-defaults": "^0.2.1",
     "restify": "^4.0.3",
     "winston": "^1.1.1"
+  },
+  "devDependencies": {
+    "chai": "^3.4.1",
+    "mocha": "^2.3.4",
+    "sinon": "^1.17.2",
+    "supertest": "^1.1.0"
   }
 }

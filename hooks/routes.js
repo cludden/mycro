@@ -25,7 +25,14 @@ module.exports = function Routes(cb) {
 
     routes = _.omit(routes, configAttributes);
 
-    _.each(routes, function(config, route) {
+    _.each(routes, function bindRoutes(config, route) {
+        // if the key is a semver version tag, bind routes using the nested route object
+        if (/^v\.\d+\.\d+\.\d+$/.test(route)) {
+            return _.each(config, function(_config, _route) {
+                bindRoutes(_config, _route);
+            });
+        }
+
         // handle regex routes
         if (config.regex === true) {
             route = new RegExp(route);

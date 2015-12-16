@@ -42,14 +42,5 @@ module.exports = function Server(cb) {
         }
     });
 
-    // load custom middleware
-    var custom = self._config.server.customMiddleware || [];
-    if (custom.length) {
-        custom.forEach(function(middleware) {
-            self.server.use(middleware(self));
-            self.log('silly', '[Server] loading custom middleware: ' + middleware);
-        });
-    }
-
     cb();
 };

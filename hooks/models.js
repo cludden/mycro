@@ -10,8 +10,10 @@ module.exports = function Models(cb) {
 
     var models = include({
         dirname: process.cwd() + '/app/models',
-        filter      :  /(.+)\.js$/,
-        optional    :  true
+        filter:  /(.+)\.js$/,
+        keepDirectoryPath: true,
+        flattenDirectories: true,
+        optional:  true
     });
 
     async.mapLimit(_.keys(models), 5, function(name, fn) {

@@ -9,10 +9,12 @@ module.exports = function Controllers(cb) {
     self.controllers = {};
 
     var controllers = include({
-        dirname     :  process.cwd() + '/app/controllers',
-        filter      :  /(.+)\.js$/,
-        excludeDirs :  /^\.(git|svn)$/,
-        optional    :  true
+        dirname:  process.cwd() + '/app/controllers',
+        filter:  /(.+)\.js$/,
+        excludeDirs:  /^\.(git|svn)$/,
+        keepDirectoryPath: true,
+        flattenDirectories: true,
+        optional:  true
     });
 
     _.extend(self.controllers, controllers);
