@@ -7,10 +7,12 @@ var asyncjs = require('async'),
     expect = chai.expect;
 
 describe('[hook] services', function() {
+
     it('should load services at microservice.services', function() {
         expect(microservice.services).to.exist;
         expect(microservice.services['simple']).to.exist;
     });
+
 
     it('should load object services', function(done) {
         asyncjs.parallel({
@@ -31,15 +33,19 @@ describe('[hook] services', function() {
         }, done);
     });
 
+
     it('should load function services', function() {
         expect(microservice.services).to.exist;
-        expect(microservice.services['complex']).to.exist;
-        expect(microservice.services['complex']).to.be.an('object');
+        ['function', 'layered'].forEach(function(service) {
+            expect(microservice.services[service]).to.exist;
+            expect(microservice.services[service]).to.be.an('object');
+        });
     });
+
 
     it('should enable services to utilize other services', function(done) {
         sinon.spy(microservice.services['simple'], 'subtract');
-        microservice.services['complex'].reverseSubtract(2, 3, function(err, difference) {
+        microservice.services['layered'].reverseSubtract(2, 3, function(err, difference) {
             expect(err).to.not.exist;
             expect(difference).to.equal(1);
             expect(microservice.services['simple'].subtract).to.have.been.called;

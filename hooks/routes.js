@@ -20,15 +20,16 @@ module.exports = function Routes(cb) {
     }
 
     var defaultMiddleware = routes.middleware,
-        version = routes.version || self._config.server.version,
+        defaultVersion = routes.version || self._config.server.version,
         name = routes.name;
 
     routes = _.omit(routes, configAttributes);
 
     _.each(routes, function bindRoutes(config, route) {
         // if the key is a semver version tag, bind routes using the nested route object
-        if (/^v\.\d+\.\d+\.\d+$/.test(route)) {
+        if (/^\d+\.\d+\.\d+$/g.test(route)) {
             return _.each(config, function(_config, _route) {
+                _config.version = route;
                 bindRoutes(_config, _route);
             });
         }
@@ -44,12 +45,13 @@ module.exports = function Routes(cb) {
             if (supportedMethods.indexOf(method) === -1) return;
 
             // if a single handler was provided, wrap it in an array
-            if (!_.isArray(handlers)) {
+            var applyDefaultMiddleware = !_.isArray(handlers);
+            if (applyDefaultMiddleware) {
                 handlers = [handlers];
             }
 
             // apply default middleware
-            if (handlers.length === 1 && middleware.length) {
+            if (applyDefaultMiddleware) {
                 handlers = middleware.slice().concat(handlers);
             }
 
@@ -59,18 +61,20 @@ module.exports = function Routes(cb) {
                 return processHandler(self, handler, (i === (length - 1)));
             }).compact().value();
 
+            var version = config.version || defaultVersion;
+
             // define base route object
             var path = _.omit({
                 path: route,
-                version: config.version || version,
-                name: (config.name || route) + ' (' + method.toUpperCase() + ')'
+                version: version,
+                name: config.name
             }, function(value) {
                 return _.isEmpty(value) && !_.isRegExp(value);
             });
 
             // create the route
             var args = [path].concat(handlers);
-            self.log('silly', '[routes] binding route:  ' + route + ' (' + method.toUpperCase() + ')');
+            self.log('silly', '[routes] binding route:  ' + route + ' (' + method.toUpperCase() + ', ' + version + ')');
             self.server[method].apply(self.server, args);
         });
     });
