@@ -31,8 +31,18 @@ module.exports = function(microservice) {
         },
 
         '2.0.0': {
+            middleware: [
+                'v2/default'
+            ],
+
+            '/api/count': {
+                'get': 'count.getCount',
+                'post': 'count.incrementCount'
+            },
+
             '/api/greet/hello/:name': {
                 middleware: [
+                    'v2/default',
                     'authenticated',
                     microservice.policies['blacklist']('mark')
                 ],
