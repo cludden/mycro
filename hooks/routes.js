@@ -19,18 +19,18 @@ module.exports = function Routes(cb) {
         self.log('info', '[Routes] no routes found');
     }
 
-    var defaultMiddleware = routes.middleware,
+    var defaultMiddleware = routes.middleware || [],
         defaultVersion = routes.version || self._config.server.version,
         name = routes.name;
 
     routes = _.omit(routes, configAttributes);
 
-    _.each(routes, function bindRoutes(config, route) {
+    function bindRoutes(config, route, defaultMiddleware) {
         // if the key is a semver version tag, bind routes using the nested route object
         if (/^\d+\.\d+\.\d+$/g.test(route)) {
             return _.each(config, function(_config, _route) {
                 _config.version = route;
-                bindRoutes(_config, _route);
+                bindRoutes(_config, _route, config.middleware || defaultMiddleware);
             });
         }
 
@@ -77,6 +77,10 @@ module.exports = function Routes(cb) {
             self.log('silly', '[routes] binding route:  ' + route + ' (' + method.toUpperCase() + ', ' + version + ')');
             self.server[method].apply(self.server, args);
         });
+    }
+
+    _.each(routes, function(config, route) {
+        bindRoutes(config, route, defaultMiddleware);
     });
 
     cb();
@@ -100,17 +104,18 @@ function processHandler(microservice, handler, final) {
     }
 
     if (_.isObject(handler)) {
-        var containers = ['controllers', 'policies'],
+        var containers = ['controller', 'policy'],
             config = _.clone(handler);
 
         // find first container on handler config
         container = _.find(containers, function(c) {
             return handler.hasOwnProperty(c);
         });
+        handler = handler[container];
+        container = container === 'controller' ? 'controllers' : 'policies';
 
         //TODO extend request options with additional configuration
 
-        handler = handler[container];
         return processStringHandler(microservice, handler, container);
     }
 }

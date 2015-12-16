@@ -48,7 +48,17 @@ describe('[hook] routes', function() {
                 });
         });
 
-        it('should allow tagged versions to provide their own default middleware');
+        it('should allow tagged versions to provide their own default middleware', function(done) {
+            request.get('/api/count')
+                .set('Accept-Version', '~2.0.0')
+                .expect(200)
+                .expect(function(res) {
+                    expect(res.headers['x-default-middleware']).to.not.exist;
+                    expect(res.headers['x-app-version']).to.equal('2.0.0');
+                })
+                .end(done);
+        });
+
         it('should allow paths to override the default middleware');
         it('should allow individual routes (method + path + version) to override the default middleware');
     });
