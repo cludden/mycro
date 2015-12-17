@@ -36,6 +36,7 @@ module.exports = function Routes(cb) {
 
         // handle regex routes
         if (config.regex === true) {
+            console.log('binding regex route:', route);
             route = new RegExp(route);
         }
 
