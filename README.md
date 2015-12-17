@@ -3,25 +3,15 @@ a [restify.js](http://restify.com) based microservice library, inspired by [sail
 
 *Note: this is still a work in progress. There may be bugs in the code, and the api is subject to change. Also, better docs and more tests are coming. In the meantime, check out the dummy app in the /test directory*
 
+
 ## Install
 ```javascript
 npm install --save restify-microservice
 ```
 
+
 ## Purpose
 To provide a highly customizable platform for a well-organized [restify.js](http://restify.com) app, using `hooks`. By default, `restify-microservice` comes bundled with hooks for middleware, models, policies, routing, services, etc. However, this module allows you to implement custom hooks extremely easily, as well as disable, override, or reorder the default hooks. More importantly, this module makes no assumption regarding which other third party ORMs or other libraries you'd like to use in your app. In fact, using restify is entirely optional, and can be disabled by excluding the `server` hook or implementing your own
-
-## Project Structure
-A typical `restify-microservice` project structure:
-- **my-project/**
-    - **app/**
-      - **controllers/**
-      - **models/**
-      - **policies/**
-      - **services/**
-    - **config/**
-    - **hooks/**
-    - index.js
 
 
 ## Getting Started
@@ -39,6 +29,20 @@ microservice.start(function(err) {
 });
 ```
 
+
+## Project Structure
+A typical `restify-microservice` project structure:
+- **my-project/**
+    - **app/**
+      - **controllers/**
+      - **models/**
+      - **policies/**
+      - **services/**
+    - **config/**
+    - **hooks/**
+    - index.js
+
+
 ## Bundled Hooks
 *more documentation coming soon*
 
@@ -47,9 +51,9 @@ microservice.start(function(err) {
 - models
 - server
 - [services](docs/hooks/services.md)
-- policies
+- [policies](docs/hooks/policies.md)
 - controllers
-- routes  
+- [routes](docs/hooks/routes.md)  
 
 The default hooks configuration is shown below. You can override this by providing your own configuration in `config/hooks.js`. A quick note, bundled hooks can be referenced by name (as strings), custom hooks or installable hooks must be `require`'ed.
 ```javascript
@@ -79,6 +83,7 @@ module.exports = [
     require('../hooks/my-own-routes-hook') // custom project hook
 ];
 ```
+
 
 ## Custom Hooks
 Implementing a custom hook is as easy as requiring a file/module that exports a function that accepts a single callback. The function is bound to the `microservice` context, which allows you to manipulate any aspect of the `microservice`.
@@ -116,6 +121,7 @@ module.exports = function(done) {
 
 *more docs coming soon*
 
+
 ## Installable Hooks
 To use these hooks, simply install them via `npm install --save <insert hook name here>` and require them in your `config/hooks.js` file.
 - [restify-microservice-mongoose](https://github.com/cludden/restify-microservice-mongoose)
@@ -123,12 +129,23 @@ To use these hooks, simply install them via `npm install --save <insert hook nam
 - [restify-microservice-mongoose-rest](https://github.com/cludden/restify-microservice-mongoose-rest)
     - Creates restful mongoose controllers for your mongoose models using [restify-mongoose](https://github.com/saintedlama/restify-mongoose)
 
+
 ## Testing
-`npm test`
+run all tests  
+```javascript
+npm test
+```
+
+run coverage
+```javascript
+grunt coverage
+```
+
 
 ## To Do
 - [ ] documentation
 - [ ] tests
+
 
 ## Contributing
 1. [Fork it](https://github.com/cludden/restify-microservice/fork)
@@ -136,6 +153,7 @@ To use these hooks, simply install them via `npm install --save <insert hook nam
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
+
 
 ## License
 Copyright (c) 2015 Chris Ludden.
