@@ -15,6 +15,7 @@ module.exports = {
         function bodyParser(microservice) {
             return microservice._restify.bodyParser();
         },
-        'request'
+        'request',
+        'request-all-params'
     ]
 };

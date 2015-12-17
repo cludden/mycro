@@ -15,11 +15,136 @@ describe('[hook] routes', function() {
 
     describe('handlers', function() {
 
-        it('should support string notation for policies');
-        it('should support string notation for controllers');
-        it('should support object notation for policies');
-        it('should support object notation for policies');
-        it('should support functions');
+        it('should support string notation for policies', function(done) {
+            asyncjs.series({
+                unauthenticatedGet: function(fn) {
+                    request.get('/api/greet/aloha/chris')
+                        .set('Accept-Version', '~1.0.0')
+                        .expect(403)
+                        .expect(function(res) {
+                            expect(res.headers['x-default-middleware']).to.not.exist;
+                        })
+                        .end(fn);
+                },
+                authenticatedGet: function(fn) {
+                    request.get('/api/greet/aloha/chris')
+                        .set('Accept-Version', '~1.0.0')
+                        .set('Authorization', 'Bearer abc')
+                        .expect(200)
+                        .expect(function(res) {
+                            expect(res.headers['x-default-middleware']).to.not.exist;
+                        })
+                        .end(fn);
+                },
+                unauthenticatedPost: function(fn) {
+                    request.post('/api/greet/aloha/chris')
+                        .set('Accept-Version', '~1.0.0')
+                        .expect(403)
+                        .expect(function(res) {
+                            expect(res.headers['x-default-middleware']).to.not.exist;
+                        })
+                        .end(fn);
+                },
+                authenticatedPost: function(fn) {
+                    request.post('/api/greet/aloha/chris')
+                        .set('Accept-Version', '~1.0.0')
+                        .set('Authorization', 'Bearer abc')
+                        .expect(200)
+                        .expect(function(res) {
+                            expect(res.headers['x-default-middleware']).to.not.exist;
+                        })
+                        .end(fn);
+                }
+            }, done);
+        });
+
+
+        it('should support string notation for controllers', function(done) {
+            asyncjs.series({
+                reset: function(fn) {
+                    request.del('/api/count')
+                        .set('Accept-Version', '~1.0.0')
+                        .expect(200)
+                        .expect(function(res) {
+                            expect(res.body.count).to.equal(0);
+                        })
+                        .end(fn);
+                },
+                post: function(fn) {
+                    request.post('/api/count')
+                        .set('Accept-Version', '~1.0.0')
+                        .expect(200)
+                        .expect(function(res) {
+                            expect(res.body.count).to.equal(1);
+                        })
+                        .end(fn);
+                },
+                get: function(fn) {
+                    request.get('/api/count')
+                        .set('Accept-Version', '~1.0.0')
+                        .expect(200)
+                        .expect(function(res) {
+                            expect(res.body.count).to.equal(1);
+                        })
+                        .end(fn);
+                }
+            }, done);
+        });
+
+
+        it('should support object notation for policies', function(done) {
+            asyncjs.parallel({
+                unauthenticated: function(fn) {
+                    request.put('/api/count')
+                        .set('Accept-Version', '~1.0.0')
+                        .expect(403)
+                        .end(fn);
+                },
+                authenticated: function(fn) {
+                    request.put('/api/count')
+                        .set('Accept-Version', '~1.0.0')
+                        .set('Authorization', 'Bearer abc')
+                        .expect(200)
+                        .end(fn);
+                }
+            }, done);
+        });
+
+
+        it('should support object notation for controllers', function(done) {
+            asyncjs.series({
+                reset: function(fn) {
+                    request.del('/api/count')
+                        .set('Accept-Version', '~1.0.0')
+                        .expect(200)
+                        .expect(function(res) {
+                            expect(res.body.count).to.equal(0);
+                        })
+                        .end(fn);
+                },
+                post: function(fn) {
+                    request.post('/api/count')
+                        .set('Accept-Version', '~1.0.0')
+                        .expect(200)
+                        .expect(function(res) {
+                            expect(res.body.count).to.equal(1);
+                        })
+                        .end(fn);
+                }
+            }, done);
+        });
+
+
+        it('should support functions', function(done) {
+            request.del('/api/count')
+                .set('Accept-Version', '~2.0.0')
+                .expect(200)
+                .expect(function(res) {
+                    expect(res.headers['x-test-header']).to.equal('true');
+                    expect(res.body.message).to.equal('boo');
+                })
+                .end(done);
+        });
     });
 
 
@@ -59,8 +184,73 @@ describe('[hook] routes', function() {
                 .end(done);
         });
 
-        it('should allow paths to override the default middleware');
-        it('should allow individual routes (method + path + version) to override the default middleware');
+        it('should allow paths to override the default middleware', function(done) {
+            asyncjs.series({
+                unauthenticatedGet: function(fn) {
+                    request.get('/api/greet/aloha/chris')
+                        .set('Accept-Version', '~1.0.0')
+                        .expect(403)
+                        .expect(function(res) {
+                            expect(res.headers['x-default-middleware']).to.not.exist;
+                        })
+                        .end(fn);
+                },
+                authenticatedGet: function(fn) {
+                    request.get('/api/greet/aloha/chris')
+                        .set('Accept-Version', '~1.0.0')
+                        .set('Authorization', 'Bearer abc')
+                        .expect(200)
+                        .expect(function(res) {
+                            expect(res.headers['x-default-middleware']).to.not.exist;
+                        })
+                        .end(fn);
+                },
+                unauthenticatedPost: function(fn) {
+                    request.post('/api/greet/aloha/chris')
+                        .set('Accept-Version', '~1.0.0')
+                        .expect(403)
+                        .expect(function(res) {
+                            expect(res.headers['x-default-middleware']).to.not.exist;
+                        })
+                        .end(fn);
+                },
+                authenticatedPost: function(fn) {
+                    request.post('/api/greet/aloha/chris')
+                        .set('Accept-Version', '~1.0.0')
+                        .set('Authorization', 'Bearer abc')
+                        .expect(200)
+                        .expect(function(res) {
+                            expect(res.headers['x-default-middleware']).to.not.exist;
+                        })
+                        .end(fn);
+                }
+            }, done);
+        });
+
+
+        it('should allow individual routes (method + path + version) to override the default middleware', function(done) {
+            asyncjs.parallel({
+                default: function(fn) {
+                    request.get('/api/count')
+                        .set('Accept-Version', '~1.0.0')
+                        .expect(200)
+                        .expect(function(res) {
+                            expect(res.headers['x-default-middleware']).to.equal('true');
+                        })
+                        .end(fn);
+                },
+
+                overridden: function(fn) {
+                    request.post('/api/count')
+                        .set('Accept-Version', '~1.0.0')
+                        .expect(200)
+                        .expect(function(res) {
+                            expect(res.headers['x-default-middleware']).to.not.exist;
+                        })
+                        .end(fn);
+                }
+            }, done);
+        });
     });
 
 
