@@ -24,7 +24,7 @@ describe('[hook] server', function() {
         });
 
         it('should load acceptParser', function(done) {
-            request.get('/api/count')
+            request.get('/healthy')
                 .set('Accept-Version', '~1.0.0')
                 .set('Accept', 'randomStuffHere')
                 .expect(406)
@@ -37,7 +37,7 @@ describe('[hook] server', function() {
                 .set('Accept-Version', '~1.0.0')
                 .expect(200)
                 .expect(function(res) {
-                    expect(res.body.queryParams).to.contain('test');
+                    expect(res.body.query.test).to.equal('true');
                 })
                 .end(done);
         });
@@ -53,7 +53,7 @@ describe('[hook] server', function() {
                 })
                 .expect(200)
                 .expect(function(res) {
-                    expect(res.body.body).to.eql({
+                    expect(res.body.params).to.eql({
                         a: 1,
                         b: 2,
                         c: 3
@@ -71,7 +71,7 @@ describe('[hook] server', function() {
                 })
                 .expect(200)
                 .expect(function(res) {
-                    expect(res.body.params).to.eql({
+                    expect(res.body.all).to.eql({
                         a: 'yes',
                         b: 'no'
                     });

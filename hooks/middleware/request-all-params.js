@@ -12,7 +12,7 @@ var _ = require('lodash'),
 module.exports = function(microservice) {
     return function request(req, res, next) {
         var queryParams = _.clone(req.query, true),
-            bodyParams = _.clone(req.query, true),
+            bodyParams = _.clone(req.body, true),
             params = {};
 
         defaultsDeep(params, queryParams);
