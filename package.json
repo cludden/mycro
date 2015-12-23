@@ -1,6 +1,6 @@
 {
   "name": "restify-microservice",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "a restify based microservice",
   "main": "index.js",
   "scripts": {
