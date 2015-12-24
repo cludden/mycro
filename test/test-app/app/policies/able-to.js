@@ -13,24 +13,25 @@ module.exports = function(ability, resource) {
         }
         asyncjs.auto({
             groups: function findGroupsUserIsMemberOf(fn) {
-                req.microservice.services['data'].find('groups', {users: req.user.id}, function(err, groups) {
+                req.microservice.services['data'].find('groups', {users: [req.user.id]}, function(err, groups) {
                     if (err) return fn(err);
                     fn(null, groups || []);
                 });
             },
 
             permission: function findMatchingPermission(fn) {
-                req.microservice.services['data'].detail('permissions', {
+                req.microservice.services['data'].find('permissions', {
                     type: 'ability',
                     resource: resource,
                     data: {
                         ability: ability
                     }
-                }, function(err, permission) {
+                }, function(err, permissions) {
                     if (err) return fn(err);
-                    if (!permission) return fn('invalid ability/resource');
-                    if (!permission.groups || !permission.groups.lengh) return fn('permission has not been assigned');
-                    fn(null, permission);
+                    if (!permissions || !permissions.length) return fn('invalid ability/resource');
+                    var p = permissions[0];
+                    if (!p.groups || !p.groups.length) return fn('permission has not been assigned');
+                    fn(null, p);
                 });
             },
 

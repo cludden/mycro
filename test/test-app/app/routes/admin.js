@@ -10,9 +10,20 @@ module.exports = function(microservice) {
                 additionalPolicies: [
                     'cache/clear'
                 ],
-                get: 'cache.clear'
+                post: 'cache.clear'
             }
         },
-        '/config': 'rest'
+        '/config': {
+            options: {
+                model: 'config'
+            },
+            routes: 'rest'
+        },
+        '/test': {
+            policies: [],
+            get: function(req, res) {
+                res.json(200, {message: 'ok'});
+            }
+        }
     };
 };

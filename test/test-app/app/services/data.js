@@ -37,9 +37,8 @@ module.exports = function(microservice) {
 
         find: function(model, criteria, cb) {
             try {
-                var records = _.where(db.select(model).get(), function(record) {
-                    return _.matches(record, criteria);
-                });
+                var records = db.select(model).get();
+                records = _.where(records, criteria);
                 return cb(null, records);
             } catch (e) {
                 cb(e);

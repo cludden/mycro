@@ -7,17 +7,18 @@ module.exports = function(group) {
             res.json(401, {error: e});
             return next(e);
         }
-        req.microservice.services['data'].detail('groups', {name: group}, function(err, group) {
+        req.microservice.services['data'].find('groups', {name: group}, function(err, _group) {
             if (err) {
                 res.json(500, {error: err});
                 return next(err);
             }
-            if (!group) {
+            if (!_group || !_group.length) {
                 err = 'no group found with name (' + group + ')';
                 res.json(500, {error: err});
                 return next(err);
             }
-            if (!group.users || !group.users.length || group.users.indexOf(req.user.id) === -1) {
+            _group = _group[0];
+            if (!_group.users || !_group.users.length || _group.users.indexOf(req.user.id) === -1) {
                 err = 'user is not a member of group (' + group + ')';
                 res.json(403, {error: err});
                 return next(err);

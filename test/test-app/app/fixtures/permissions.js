@@ -4,6 +4,9 @@ module.exports = [{
     id: 1,
     type: 'ability',
     resource: 'users',
+    groups: [
+        1
+    ],
     data: {
         ability: 'manage'
     }
@@ -11,6 +14,9 @@ module.exports = [{
     id: 2,
     type: 'ability',
     resource: 'groups',
+    groups: [
+        1
+    ],
     data: {
         ability: 'manage'
     }

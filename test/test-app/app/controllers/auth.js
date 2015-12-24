@@ -2,7 +2,7 @@
 
 module.exports = {
     login: function(req, res) {
-        req.microservice.log('silly', '[controller] auth.login executed');
+        req.microservice.log('silly', '[controller] auth.login options', req.options);
         res.json(200, {message: 'login successful!'});
     },
 

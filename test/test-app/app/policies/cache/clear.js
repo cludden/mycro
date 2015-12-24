@@ -19,17 +19,26 @@ module.exports = function(req, res, next) {
             });
         },
 
-        authorize: ['validate', function authorizeClearPath(fn, r) {
-            if (!req.user.groups || !req.user.groups.length) {
-                res.json(403, {error: 'Insufficient privelages'});
-                return fn(true);
-            }
+        groups: ['validate', function findUserGroups(fn, r) {
+            req.microservice.services['data'].find('groups', {users: [1]}, function(err, groups) {
+                if (err) {
+                    res.json(500, {error: err});
+                    return fn(true);
+                }
+                if (!groups || !groups.length) {
+                    res.json(403, {error: 'Insufficient privelages'});
+                    return fn(true);
+                }
+                fn(null, groups);
+            });
+        }],
 
+        authorize: ['groups', function authorizeClearPath(fn, r) {
             req.microservice.services['permissions'].find({
                 type: 'cache',
                 resource: 'cache',
                 data: {
-                    groups: req.user.groups,
+                    groups: r.groups,
                     path: r.validate.path
                 }
             }, function(err, permissions) {
@@ -46,6 +55,7 @@ module.exports = function(req, res, next) {
         }]
     }, function(err) {
         if (err) {
+            console.log(err);
             if (err === true) return;
             return res.json(500, {error: err});
         }

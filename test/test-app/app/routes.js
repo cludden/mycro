@@ -32,6 +32,7 @@ module.exports = function(microservice) {
                 },
                 '/login': {
                     // define route (POST /api/login)
+                    get: 'auth.login',
                     post: {
                         policies: [], // override the policy chain for this route
                         handler: 'auth.login' // define the handler (/app/controllers/auth.js#login)
@@ -51,12 +52,27 @@ module.exports = function(microservice) {
                     // routes can be reused, while also changing the policy chain and request options
                     routes: 'rest'
                 },
+                '/public/logout': {
+                    policies: [],
+                    get: 'auth.logout'
+                },
                 '/say': {
-                    '/hello/(\w+)': {
+                    '/hello/(\\w+)': {
                         regex: true,
-                        get: 'greet.hello'
+                        get: 'greet.hello',
+                        '/test': {
+                            get: function(req, res) {
+                                res.json(200, {message: 'test successful'});
+                            },
+                            '/(\\d+)': {
+                                regex: true,
+                                get: function(req, res) {
+                                    res.json(200, {message: req.params[1]});
+                                }
+                            }
+                        }
                     },
-                    '/goodbye/(\w+)': {
+                    '/goodbye/(\\w+)': {
                         regex: true,
                         get: 'greet.goodbye'
                     }
@@ -67,9 +83,6 @@ module.exports = function(microservice) {
                         model: 'users'
                     },
                     get: {
-                        additionalPolicies: [
-
-                        ],
                         handler: 'rest.find'
                     },
                     post: 'rest.create',
