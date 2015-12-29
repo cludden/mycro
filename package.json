@@ -4,7 +4,7 @@
   "description": "a restify based microservice",
   "main": "index.js",
   "scripts": {
-    "test": "mocha test/index.test.js test/hooks/* --recursive"
+    "test": "mocha test/index.test.js test/basic/* test/hooks/* --recursive"
   },
   "keywords": [
     "microbial",

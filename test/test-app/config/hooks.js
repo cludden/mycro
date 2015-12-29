@@ -5,5 +5,10 @@ module.exports = [
     'services',
     'policies',
     'controllers',
-    'routes'
+    'routes',
+    function test_function_hook(cb) {
+        var microservice = this;
+        microservice.log('silly', 'controllers:', microservice.controllers.length);
+        cb();
+    }
 ];

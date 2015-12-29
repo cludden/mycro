@@ -34,14 +34,12 @@ var Microservice = function(config) {
     // passed as the sole argument
     defaults = _.mapValues(defaults, function(constructor) {
         if (typeof constructor === 'function') {
-            if (constructor.length === 1) return constructor(self);
-            return constructor();
+            return constructor(self);
         }
         return constructor;
     });
     userConfig = _.mapValues(userConfig, function(constructor) {
         if (typeof constructor === 'function') {
-            if (constructor.length === 1) return constructor(self);
             return constructor();
         }
         return constructor;
@@ -73,8 +71,18 @@ var Microservice = function(config) {
                 self.log('silly', '[init] loading hook: ' + hook);
                 return;
             } catch (err) {
-                self.log('error', '[init] unable to locate hook: ' + hook);
-                self.log('error', err);
+                try {
+                    resolved = require(hook);
+                    self._hooks.push(resolved);
+                    self.log('silly', '[init] loading hook: ' + hook);
+                    return;
+                } catch (e) {
+                    self._hooks.push(function(cb) {
+                        self.log('error', 'error loading hook: ' + hook);
+                        cb(e);
+                    });
+                    return;
+                }
             }
         }
     });
@@ -99,7 +107,7 @@ var Microservice = function(config) {
 
                 // start the server
                 var port = parseInt(self._config.server.port || process.env['PORT']);
-                if (typeof port !== 'number') return done('Invalid port: ' + port);
+                if (isNaN(port)) return done();
                 self.server.listen(port);
                 done();
             }

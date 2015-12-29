@@ -79,4 +79,58 @@ describe('[hook] server', function() {
                 .end(done);
         });
     });
+
+    context('coverage tests', function() {
+        it('should not throw an error if a non-string or function middleware is provided', function(done) {
+            var originalDir = process.cwd();
+            process.chdir(__dirname + '/../test-app-2');
+
+            var Microservice = require('../../index'),
+                m = new Microservice({
+                    server: {
+                        port: 'abc',
+                        middleware: [
+                            1,
+                            {}
+                        ]
+                    },
+                    hooks: [
+                        'server',
+                        'routes'
+                    ]
+                });
+
+            m.start(function(err) {
+                expect(err).to.not.exist;
+                process.chdir(originalDir);
+                done();
+            });
+        });
+
+
+        it('should not throw an error if string middleware can\'t be found', function(done) {
+            var originalDir = process.cwd();
+            process.chdir(__dirname + '/../test-app-2');
+
+            var Microservice = require('../../index'),
+                m = new Microservice({
+                    server: {
+                        port: 'abc',
+                        middleware: [
+                            'test'
+                        ]
+                    },
+                    hooks: [
+                        'server',
+                        'routes'
+                    ]
+                });
+
+            m.start(function(err) {
+                expect(err).to.not.exist;
+                process.chdir(originalDir);
+                done();
+            });
+        });
+    });
 });
