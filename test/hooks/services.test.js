@@ -10,47 +10,36 @@ describe('[hook] services', function() {
 
     it('should load services at microservice.services', function() {
         expect(microservice.services).to.exist;
-        expect(microservice.services['simple']).to.exist;
+        expect(microservice.services['data']).to.exist;
     });
 
 
-    it('should load object services', function(done) {
-        asyncjs.parallel({
-            add: function(fn) {
-                microservice.services['simple'].add(1, 2, function(err, sum) {
-                    expect(err).to.not.exist;
-                    expect(sum).to.equal(3);
-                    fn(err);
-                });
-            },
-            subtract: function(fn) {
-                microservice.services['simple'].subtract(3, 2, function(err, difference) {
-                    expect(err).to.not.exist;
-                    expect(difference).to.equal(1);
-                    fn(err);
-                });
-            }
-        }, done);
+    it('should load object services', function() {
+        var sum = microservice.services['math'].add(1, 2);
+        expect(sum).to.equal(3);
     });
 
 
     it('should load function services', function() {
-        expect(microservice.services).to.exist;
-        ['function', 'layered'].forEach(function(service) {
-            expect(microservice.services[service]).to.exist;
-            expect(microservice.services[service]).to.be.an('object');
-        });
+        expect(microservice.services['error']).to.be.an('object');
+        expect(microservice.services['error'].notify).to.be.a('function');
+    });
+
+
+    it('should load non-first level services at the appropriate path', function() {
+        expect(microservice.services['format/date']).to.be.an('object');
+        expect(microservice.services['format/date'].format).to.be.a('function');
+        expect(microservice.services['format/number']).to.be.an('object');
+        expect(microservice.services['format/number'].format).to.be.a('function');
     });
 
 
     it('should enable services to utilize other services', function(done) {
-        sinon.spy(microservice.services['simple'], 'subtract');
-        microservice.services['layered'].reverseSubtract(2, 3, function(err, difference) {
-            expect(err).to.not.exist;
-            expect(difference).to.equal(1);
-            expect(microservice.services['simple'].subtract).to.have.been.called;
-            microservice.services['simple'].subtract.restore();
-            done(err);
+        sinon.spy(microservice.services['error'], 'notify');
+        microservice.services['format/date'].format('gibberish', 'YYYY MM DD', function(err, formatted) {
+            expect(err).to.exist;
+            expect(microservice.services['error'].notify).to.have.been.calledWith('Invalid date');
+            done();
         });
     });
 });

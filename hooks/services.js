@@ -18,8 +18,7 @@ module.exports = function Services(cb) {
 
     services = _.mapValues(services, function(constructor) {
         if (typeof constructor === 'function') {
-            if (constructor.length === 1) return constructor(self);
-            return constructor();
+            return constructor(self);
         }
         return constructor;
     });

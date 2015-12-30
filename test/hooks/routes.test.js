@@ -1,291 +1,363 @@
 /* jshint expr:true */
 'use strict';
 
-var chai = require('chai'),
-    asyncjs = require('async'),
+var asyncjs = require('async'),
+    expect = require('chai').expect,
     sinon = require('sinon'),
-    expect = chai.expect;
+    supertest = require('supertest');
 
 describe('[hook] routes', function() {
     var request;
 
     before(function() {
-        request = require('supertest').agent(microservice.server);
-    });
-
-    describe('handlers', function() {
-
-        it('should support string notation for policies', function(done) {
-            asyncjs.series({
-                unauthenticatedGet: function(fn) {
-                    request.get('/api/greet/aloha/chris')
-                        .set('Accept-Version', '~1.0.0')
-                        .expect(403)
-                        .expect(function(res) {
-                            expect(res.headers['x-default-middleware']).to.not.exist;
-                        })
-                        .end(fn);
-                },
-                authenticatedGet: function(fn) {
-                    request.get('/api/greet/aloha/chris')
-                        .set('Accept-Version', '~1.0.0')
-                        .set('Authorization', 'Bearer abc')
-                        .expect(200)
-                        .expect(function(res) {
-                            expect(res.headers['x-default-middleware']).to.not.exist;
-                        })
-                        .end(fn);
-                },
-                unauthenticatedPost: function(fn) {
-                    request.post('/api/greet/aloha/chris')
-                        .set('Accept-Version', '~1.0.0')
-                        .expect(403)
-                        .expect(function(res) {
-                            expect(res.headers['x-default-middleware']).to.not.exist;
-                        })
-                        .end(fn);
-                },
-                authenticatedPost: function(fn) {
-                    request.post('/api/greet/aloha/chris')
-                        .set('Accept-Version', '~1.0.0')
-                        .set('Authorization', 'Bearer abc')
-                        .expect(200)
-                        .expect(function(res) {
-                            expect(res.headers['x-default-middleware']).to.not.exist;
-                        })
-                        .end(fn);
-                }
-            }, done);
-        });
-
-
-        it('should support string notation for controllers', function(done) {
-            asyncjs.series({
-                reset: function(fn) {
-                    request.del('/api/count')
-                        .set('Accept-Version', '~1.0.0')
-                        .expect(200)
-                        .expect(function(res) {
-                            expect(res.body.count).to.equal(0);
-                        })
-                        .end(fn);
-                },
-                post: function(fn) {
-                    request.post('/api/count')
-                        .set('Accept-Version', '~1.0.0')
-                        .expect(200)
-                        .expect(function(res) {
-                            expect(res.body.count).to.equal(1);
-                        })
-                        .end(fn);
-                },
-                get: function(fn) {
-                    request.get('/api/count')
-                        .set('Accept-Version', '~1.0.0')
-                        .expect(200)
-                        .expect(function(res) {
-                            expect(res.body.count).to.equal(1);
-                        })
-                        .end(fn);
-                }
-            }, done);
-        });
-
-
-        it('should support object notation for policies', function(done) {
-            asyncjs.parallel({
-                unauthenticated: function(fn) {
-                    request.put('/api/count')
-                        .set('Accept-Version', '~1.0.0')
-                        .expect(403)
-                        .end(fn);
-                },
-                authenticated: function(fn) {
-                    request.put('/api/count')
-                        .set('Accept-Version', '~1.0.0')
-                        .set('Authorization', 'Bearer abc')
-                        .expect(200)
-                        .end(fn);
-                }
-            }, done);
-        });
-
-
-        it('should support object notation for controllers', function(done) {
-            asyncjs.series({
-                reset: function(fn) {
-                    request.del('/api/count')
-                        .set('Accept-Version', '~1.0.0')
-                        .expect(200)
-                        .expect(function(res) {
-                            expect(res.body.count).to.equal(0);
-                        })
-                        .end(fn);
-                },
-                post: function(fn) {
-                    request.post('/api/count')
-                        .set('Accept-Version', '~1.0.0')
-                        .expect(200)
-                        .expect(function(res) {
-                            expect(res.body.count).to.equal(1);
-                        })
-                        .end(fn);
-                }
-            }, done);
-        });
-
-
-        it('should support functions', function(done) {
-            request.del('/api/count')
-                .set('Accept-Version', '~2.0.0')
-                .expect(200)
-                .expect(function(res) {
-                    expect(res.headers['x-test-header']).to.equal('true');
-                    expect(res.body.message).to.equal('boo');
-                })
-                .end(done);
-        });
+        request = supertest.agent(microservice.server);
     });
 
 
-    describe('middleware', function() {
+    it('should allow multiple versions to be defined', function(done) {
+        asyncjs.parallel([
+            function noVersionSpecified(fn) {
+                request.get('/healthy')
+                    .expect(200)
+                    .expect(function(res) {
+                        expect(res.body).to.eql({status: 'healthy'});
+                    })
+                    .end(fn);
+            },
 
-        it('should apply the default middleware to first-level routes', function(done) {
-            request.get('/api/greet/hello/chris')
-                .set('Accept-Version', '~1.0.0')
-                .expect(200)
-                .expect(function(res) {
-                    expect(res.headers['x-default-middleware']).to.equal('true');
-                })
-                .end(done);
-        });
+            function v1(fn) {
+                request.get('/healthy')
+                    .set('Accept-Version', '~1.0.0')
+                    .expect(200)
+                    .expect(function(res) {
+                        expect(res.body).to.eql({});
+                    })
+                    .end(fn);
+            },
 
-
-        it('should apply inline default middleware to first-level routes', function(done) {
-            sinon.spy(microservice, 'log');
-            request.get('/api/greet/hello/chris')
-                .set('Accept-Version', '~1.0.0')
-                .expect(200)
-                .end(function(err) {
-                    expect(microservice.log).to.have.been.calledWith('silly', 'inline default middleware');
-                    microservice.log.restore();
-                    done();
-                });
-        });
-
-        it('should allow tagged versions to provide their own default middleware', function(done) {
-            request.get('/api/count')
-                .set('Accept-Version', '~2.0.0')
-                .expect(200)
-                .expect(function(res) {
-                    expect(res.headers['x-default-middleware']).to.not.exist;
-                    expect(res.headers['x-app-version']).to.equal('2.0.0');
-                })
-                .end(done);
-        });
-
-        it('should allow paths to override the default middleware', function(done) {
-            asyncjs.series({
-                unauthenticatedGet: function(fn) {
-                    request.get('/api/greet/aloha/chris')
-                        .set('Accept-Version', '~1.0.0')
-                        .expect(403)
-                        .expect(function(res) {
-                            expect(res.headers['x-default-middleware']).to.not.exist;
-                        })
-                        .end(fn);
-                },
-                authenticatedGet: function(fn) {
-                    request.get('/api/greet/aloha/chris')
-                        .set('Accept-Version', '~1.0.0')
-                        .set('Authorization', 'Bearer abc')
-                        .expect(200)
-                        .expect(function(res) {
-                            expect(res.headers['x-default-middleware']).to.not.exist;
-                        })
-                        .end(fn);
-                },
-                unauthenticatedPost: function(fn) {
-                    request.post('/api/greet/aloha/chris')
-                        .set('Accept-Version', '~1.0.0')
-                        .expect(403)
-                        .expect(function(res) {
-                            expect(res.headers['x-default-middleware']).to.not.exist;
-                        })
-                        .end(fn);
-                },
-                authenticatedPost: function(fn) {
-                    request.post('/api/greet/aloha/chris')
-                        .set('Accept-Version', '~1.0.0')
-                        .set('Authorization', 'Bearer abc')
-                        .expect(200)
-                        .expect(function(res) {
-                            expect(res.headers['x-default-middleware']).to.not.exist;
-                        })
-                        .end(fn);
-                }
-            }, done);
-        });
-
-
-        it('should allow individual routes (method + path + version) to override the default middleware', function(done) {
-            asyncjs.parallel({
-                default: function(fn) {
-                    request.get('/api/count')
-                        .set('Accept-Version', '~1.0.0')
-                        .expect(200)
-                        .expect(function(res) {
-                            expect(res.headers['x-default-middleware']).to.equal('true');
-                        })
-                        .end(fn);
-                },
-
-                overridden: function(fn) {
-                    request.post('/api/count')
-                        .set('Accept-Version', '~1.0.0')
-                        .expect(200)
-                        .expect(function(res) {
-                            expect(res.headers['x-default-middleware']).to.not.exist;
-                        })
-                        .end(fn);
-                }
-            }, done);
-        });
+            function v2(fn) {
+                request.get('/healthy')
+                    .set('Accept-Version', '~2.0.0')
+                    .expect(200)
+                    .expect(function(res) {
+                        expect(res.body.status).to.equal('healthy');
+                    })
+                    .end(fn);
+            }
+        ], done);
     });
 
 
-    describe('versioning', function() {
-
-        it('should load first-level routes with the default version', function(done) {
-            asyncjs.parallel({
-                'v1.0.0': function(fn) {
-                    request.get('/api/greet/hello/chris')
-                        .set('Accept-Version', '~1.0.0')
-                        .expect(200)
-                        .expect(function(res) {
-                            expect(res.body.message).to.equal('Hello, chris!');
-                        })
-                        .end(function(err, res) {
-                            fn(err);
+    it('should allow `req.options` to be defined and extended at multiple levels', function(done) {
+        asyncjs.parallel([
+            function depth1(fn) {
+                request.get('/api/test/options/l1')
+                    .expect(200)
+                    .expect(function(res) {
+                        expect(res.body.options).to.eql({
+                            desc: '/api/test/options',
+                            depth1: 'a'
                         });
-                },
+                    })
+                    .end(fn);
+            },
 
-                'v3.0.0': function(fn) {
-                    request.get('/api/greet/hello/chris')
-                        .set('Accept-Version', '~3.0.0')
-                        .expect(400)
-                        .end(fn);
-                }
-            }, done);
-        });
+            function depth2(fn) {
+                request.get('/api/test/options/l1/l2')
+                    .expect(200)
+                    .expect(function(res) {
+                        expect(res.body.options).to.eql({
+                            desc: '/api/test/options',
+                            depth1: 'a',
+                            depth2: 'b'
+                        });
+                    })
+                    .end(fn);
+            }
+        ], done);
+    });
 
 
-        it('should load tagged routes with the specified version', function(done) {
-            request.get('/api/greet/hello/chris')
-                .set('Accept-Version', '~2.0.0')
-                .set('Authorization', 'Bearer abc')
-                .expect(200)
-                .end(done);
-        });
+    it('should allow policies to be defined at path, subpath, and route levels', function(done) {
+        asyncjs.parallel([
+            function path(fn) {
+                asyncjs.parallel([
+                    function error(_fn) {
+                        request.get('/api/logout')
+                            .expect(401)
+                            .end(_fn);
+                    },
+
+                    function success(_fn) {
+                        request.get('/api/logout')
+                            .set('x-user-id', 1)
+                            .expect(200)
+                            .expect(function(res) {
+                                expect(res.body.message).to.equal('logout successful!');
+                            })
+                            .end(_fn);
+                    }
+                ], fn);
+            },
+
+            function subpath(fn) {
+                request.get('/api/public/logout')
+                    .expect(200)
+                    .expect(function(res) {
+                        expect(res.body.message).to.equal('logout successful!');
+                    })
+                    .end(fn);
+            },
+
+            function route(fn) {
+                asyncjs.parallel([
+                    function noOverrides(_fn) {
+                        request.get('/api/login')
+                            .expect(401)
+                            .end(_fn);
+                    },
+
+                    function overrides(_fn) {
+                        request.post('/api/login')
+                            .expect(200)
+                            .expect(function(res) {
+                                expect(res.body.message).to.equal('login successful!');
+                            })
+                            .end(_fn);
+                    }
+                ], fn);
+            }
+        ], done);
+    });
+
+
+    it('should allow policies to be added to the policy chain at subpaths and routes', function(done) {
+        asyncjs.parallel({
+            subpathError: function(fn) {
+                request.get('/api/groups')
+                    .set('x-user-id', 2)
+                    .expect(403)
+                    .end(fn);
+            },
+
+            subpathSuccess: function(fn) {
+                request.get('/api/groups')
+                    .set('x-user-id', 1)
+                    .expect(200)
+                    .end(fn);
+            },
+
+            routeError: function(fn) {
+                request.get('/api/users/1')
+                    .set('x-user-id', 3)
+                    .expect(403)
+                    .end(fn);
+            },
+
+            routeSuccessIsEqual: function(fn) {
+                request.get('/api/users/2')
+                    .set('x-user-id', 2)
+                    .expect(200)
+                    .end(fn);
+            },
+
+            routeSuccessAbleTo: function(fn) {
+                request.get('/api/users/2')
+                    .set('x-user-id', 1)
+                    .expect(200)
+                    .end(fn);
+            }
+        }, done);
+    });
+
+
+    it('should allow function handlers at all levels', function(done) {
+        asyncjs.parallel([
+            function(fn) {
+                request.get('/healthy')
+                    .set('accept-version', '1.0.0')
+                    .expect(200)
+                    .expect(function(res) {
+                        expect(res.body).to.eql({});
+                    })
+                    .end(fn);
+            },
+
+            function(fn) {
+                request.get('/api/test/options')
+                    .expect(200)
+                    .expect(function(res) {
+                        expect(res.body.options).to.eql({
+                            desc: '/api/test/options'
+                        });
+                    })
+                    .end(fn);
+            }
+        ], done);
+    });
+
+
+    it('should allow function policies', function(done) {
+        asyncjs.parallel([
+            function(fn) {
+                request.get('/api/users/1')
+                    .set('x-user-id', 2)
+                    .expect(403)
+                    .end(fn);
+            },
+            function(fn) {
+                request.get('/api/users/2')
+                    .set('x-user-id', 1)
+                    .expect(200)
+                    .end(fn);
+            },
+            function(fn) {
+                request.get('/api/users/3')
+                    .set('x-user-id', 3)
+                    .expect(200)
+                    .end(fn);
+            }
+        ], done);
+    });
+
+
+    it('should allow multiple levels of function policies', function(done) {
+        asyncjs.parallel([
+            function(fn) {
+                request.put('/api/users/1')
+                    .expect(401)
+                    .end(fn);
+            },
+            function(fn) {
+                request.put('/api/users/1')
+                    .set('x-user-id', 2)
+                    .expect(403)
+                    .end(fn);
+            },
+            function(fn) {
+                request.put('/api/users/2')
+                    .set('x-user-id', 2)
+                    .expect(200)
+                    .expect(function(res) {
+                        expect(res.headers['x-blacklist']).to.equal('id,email,last,mobile');
+                    })
+                    .end(fn);
+            },
+            function(fn) {
+                request.put('/api/users/2')
+                    .set('x-user-id', 1)
+                    .expect(200)
+                    .expect(function(res) {
+                        expect(res.headers['x-blacklist']).to.equal('id');
+                    })
+                    .end(fn);
+            }
+        ], done);
+    });
+
+
+    it('should allow routes to be included at a subpath via string', function(done) {
+        request.get('/api/admin/test')
+            .expect(200)
+            .expect(function(res) {
+                expect(res.body.message).to.equal('ok');
+            })
+            .end(done);
+    });
+
+
+    it('should allow routes to be included at a subpath via a `routes` attribute', function(done) {
+        asyncjs.parallel([
+            function(fn) {
+                request.get('/api/groups')
+                    .set('x-user-id', 1)
+                    .expect(200)
+                    .expect(function(res) {
+                        expect(res.body).to.have.lengthOf(2);
+                    })
+                    .end(fn);
+            },
+
+            function(fn) {
+                request.get('/api/groups/1')
+                    .set('x-user-id', 1)
+                    .expect(200)
+                    .expect(function(res) {
+                        expect(res.body.id).to.equal(1);
+                    })
+                    .end(fn);
+            }
+        ], done);
+    });
+
+
+    it('should allow regex routes at various levels', function(done) {
+        asyncjs.parallel([
+            function(fn) {
+                request.get('/api/say/hello/chris')
+                    .set('x-user-id', 1)
+                    .expect(200)
+                    .expect(function(res) {
+                        expect(res.body.message).to.equal('Hello chris!');
+                    })
+                    .end(fn);
+            },
+
+            function(fn) {
+                request.get('/api/say/hello/chris/test')
+                    .set('x-user-id', 1)
+                    .expect(200)
+                    .expect(function(res) {
+                        expect(res.body.message).to.equal('test successful');
+                    })
+                    .end(fn);
+            },
+
+            function(fn) {
+                request.get('/api/say/hello/chris/test/123')
+                    .set('x-user-id', 1)
+                    .expect(200)
+                    .expect(function(res) {
+                        expect(res.body.message).to.equal('123');
+                    })
+                    .end(fn);
+            },
+
+            function(fn) {
+                request.get('/api/say/hello/chris/test/abc')
+                    .set('x-user-id', 1)
+                    .expect(404)
+                    .end(fn);
+            }
+        ], done);
+    });
+
+
+    it('should allow included routes to be reused', function(done) {
+        asyncjs.series([
+            function(fn) {
+                sinon.spy(microservice.services['data'], 'find');
+                request.get('/api/groups')
+                    .set('x-user-id', 1)
+                    .expect(200)
+                    .end(function(err) {
+                        expect(microservice.services['data'].find).to.have.been.called;
+                        microservice.services['data'].find.restore();
+                        done(err);
+                    });
+            },
+
+            function(fn) {
+                sinon.spy(microservice.services['data'], 'find');
+                request.get('/api/users')
+                    .set('x-user-id', 1)
+                    .expect(200)
+                    .end(function(err) {
+                        expect(microservice.services['data'].find).to.have.been.called;
+                        microservice.services['data'].find.restore();
+                        done(err);
+                    });
+            }
+        ]);
     });
 });

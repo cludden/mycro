@@ -24,7 +24,7 @@ describe('[hook] server', function() {
         });
 
         it('should load acceptParser', function(done) {
-            request.get('/api/count')
+            request.get('/healthy')
                 .set('Accept-Version', '~1.0.0')
                 .set('Accept', 'randomStuffHere')
                 .expect(406)
@@ -37,7 +37,7 @@ describe('[hook] server', function() {
                 .set('Accept-Version', '~1.0.0')
                 .expect(200)
                 .expect(function(res) {
-                    expect(res.body.queryParams).to.contain('test');
+                    expect(res.body.query.test).to.equal('true');
                 })
                 .end(done);
         });
@@ -53,7 +53,7 @@ describe('[hook] server', function() {
                 })
                 .expect(200)
                 .expect(function(res) {
-                    expect(res.body.body).to.eql({
+                    expect(res.body.params).to.eql({
                         a: 1,
                         b: 2,
                         c: 3
@@ -71,12 +71,66 @@ describe('[hook] server', function() {
                 })
                 .expect(200)
                 .expect(function(res) {
-                    expect(res.body.params).to.eql({
+                    expect(res.body.all).to.eql({
                         a: 'yes',
                         b: 'no'
                     });
                 })
                 .end(done);
+        });
+    });
+
+    context('coverage tests', function() {
+        it('should not throw an error if a non-string or function middleware is provided', function(done) {
+            var originalDir = process.cwd();
+            process.chdir(__dirname + '/../test-app-2');
+
+            var Microservice = require('../../index'),
+                m = new Microservice({
+                    server: {
+                        port: 'abc',
+                        middleware: [
+                            1,
+                            {}
+                        ]
+                    },
+                    hooks: [
+                        'server',
+                        'routes'
+                    ]
+                });
+
+            m.start(function(err) {
+                expect(err).to.not.exist;
+                process.chdir(originalDir);
+                done();
+            });
+        });
+
+
+        it('should not throw an error if string middleware can\'t be found', function(done) {
+            var originalDir = process.cwd();
+            process.chdir(__dirname + '/../test-app-2');
+
+            var Microservice = require('../../index'),
+                m = new Microservice({
+                    server: {
+                        port: 'abc',
+                        middleware: [
+                            'test'
+                        ]
+                    },
+                    hooks: [
+                        'server',
+                        'routes'
+                    ]
+                });
+
+            m.start(function(err) {
+                expect(err).to.not.exist;
+                process.chdir(originalDir);
+                done();
+            });
         });
     });
 });

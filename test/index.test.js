@@ -8,7 +8,7 @@ var chai = require('chai'),
 chai.use(sinonChai);
 
 before(function(done) {
-    process.chdir(__dirname + '/dummy-app');
+    process.chdir(__dirname + '/test-app');
 
     var Microservice = require('../'),
         microservice = new Microservice();

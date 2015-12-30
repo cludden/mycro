@@ -11,54 +11,33 @@ npm install --save restify-microservice
 
 
 ## Purpose
-To provide a highly customizable platform for a well-organized [restify.js](http://restify.com) app, using `hooks`. By default, `restify-microservice` comes bundled with hooks for middleware, models, policies, routing, services, etc. However, this module allows you to implement custom hooks extremely easily, as well as disable, override, or reorder the default hooks. More importantly, this module makes no assumption regarding which other third party ORMs or other libraries you'd like to use in your app. In fact, using restify is entirely optional, and can be disabled by excluding the `server` hook or implementing your own
+To provide a highly customizable platform for a well-organized [restify.js](http://restify.com) app, using `hooks`. By default, `restify-microservice` comes bundled with hooks for middleware, models, policies, routing, services, etc. However, this module allows you to implement custom hooks extremely easily, as well as disable, override, or reorder the default hooks. More importantly, this module makes no assumption regarding which other third party libraries (ORMs, middleware, templating engines, etc) you'd like to use in your app. In fact, using restify is entirely optional, and can be disabled by excluding the `server` hook or implementing your own
 
 
-## Getting Started
-```javascript
-// in index.js
-
-var Microservice = require('restify-microservice'),
-    microservice = new Microservice();
-
-microservice.start(function(err) {
-    if (err) {
-        return microservice.log('error', err);
-    }
-    microservice.log('info', 'microservice started successfully');
-});
-```
-
-
-## Project Structure
-A typical `restify-microservice` project structure:
-- **my-project/**
-    - **app/**
-      - **controllers/**
-      - **models/**
-      - **policies/**
-      - **services/**
-    - **config/**
-    - **hooks/**
-    - index.js
-
+## Docs
+1. [Getting Started](/docs/getting-started.md)
+2. [Controllers](/docs/controllers.md)
+3. [Services](/docs/services.md)
+4. [Routing (Part I)](/docs/routing-01.md)
+5. [Policies](/docs/policies.md)
+6. [Routing (Part II)](/docs/routing-02.md)
+7. [Models and Connections](/docs/models-and-connections.md)
+8. [Middleware](/docs/middleware.md)
+9. [Configuration](/docs/configuration.md)
 
 ## Bundled Hooks
-*more documentation coming soon*
-
 `restify-microservice` comes bundled with the following hooks:
 - connections
 - models
 - server
-- [services](docs/hooks/services.md)
-- [policies](docs/hooks/policies.md)
+- services
+- policies
 - controllers
-- [routes](docs/hooks/routes.md)  
+- routes
 
-The default hooks configuration is shown below. You can override this by providing your own configuration in `config/hooks.js`. A quick note, bundled hooks can be referenced by name (as strings), custom hooks or installable hooks must be `require`'ed.
+
+The default hooks configuration is shown below. You can override this by providing your own configuration in `config/hooks.js`.
 ```javascript
-// default hook configuration
-
 module.exports = [
     'connections',
     'models',
@@ -71,15 +50,16 @@ module.exports = [
 ```
 
 To implement your own hook configuration, define your own `config/hooks.js` file:
-```javascript
-// in config/hooks.js
 
+
+*config/hooks.js*
+```javascript
 module.exports = [
     'server',
     'services',
     require('../hooks/my-hook.js'), // custom project hook
     'controllers',
-    require('super-cool-hook'), // installable hook
+    'super-cool-hook', // installable hook
     require('../hooks/my-own-routes-hook') // custom project hook
 ];
 ```
@@ -87,9 +67,10 @@ module.exports = [
 
 ## Custom Hooks
 Implementing a custom hook is as easy as requiring a file/module that exports a function that accepts a single callback. The function is bound to the `microservice` context, which allows you to manipulate any aspect of the `microservice`.
-```javascript
-// in hooks/my-hook.js
 
+
+*hooks/my-hook.js*
+```javascript
 module.exports = function(done) {
     var microservice = this;
 
@@ -112,20 +93,14 @@ module.exports = function(done) {
         }
         done();
     });
-}
+};
 ```
 
 
-## Configuration
-`restify-microservice` assumes some basic configuration, outlined below. You can override this configuration by creating the appropriate config file in your `config/` folder.  
-
-*more docs coming soon*
-
-
-## Installable Hooks
+## Installable Hooks & Adapters
 To use these hooks, simply install them via `npm install --save <insert hook name here>` and require them in your `config/hooks.js` file.
 - [restify-microservice-mongoose](https://github.com/cludden/restify-microservice-mongoose)
-    - Auto compile mongoose models and make them available at `microservice.models`
+    - mongoose adapter
 - [restify-microservice-mongoose-rest](https://github.com/cludden/restify-microservice-mongoose-rest)
     - Creates restful mongoose controllers for your mongoose models using [restify-mongoose](https://github.com/saintedlama/restify-mongoose)
 
@@ -140,11 +115,6 @@ run coverage
 ```javascript
 grunt coverage
 ```
-
-
-## To Do
-- [ ] documentation
-- [ ] tests
 
 
 ## Contributing

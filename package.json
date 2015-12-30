@@ -4,7 +4,7 @@
   "description": "a restify based microservice",
   "main": "index.js",
   "scripts": {
-    "test": "mocha test/index.test.js test/**/*.test.js"
+    "test": "mocha test/index.test.js test/basic/* test/hooks/* --recursive"
   },
   "keywords": [
     "microbial",
@@ -20,15 +20,22 @@
   "dependencies": {
     "async": "^1.4.2",
     "include-all": "^0.1.6",
+    "joi": "^7.0.1",
     "lodash": "^3.10.1",
     "merge-defaults": "^0.2.1",
+    "path-to-regexp": "^1.2.1",
     "restify": "^4.0.3",
     "winston": "^1.1.1"
   },
   "devDependencies": {
+    "baobab": "^2.2.1",
     "chai": "^3.4.1",
     "istanbul": "^0.4.1",
     "mocha": "^2.3.4",
+    "moment": "^2.10.6",
+    "morgan": "^1.6.1",
+    "numeral": "^1.5.3",
+    "restify-microservice-mongoose-rest": "0.0.1",
     "sinon": "^1.17.2",
     "sinon-chai": "^2.8.0",
     "supertest": "^1.1.0"

@@ -12,10 +12,7 @@ module.exports = function(microservice) {
         req.microservice = microservice;
 
         // define request attributes
-        req.options = {
-            where: {},
-            values: {}
-        };
+        req.options = {};
 
         next();
     };
