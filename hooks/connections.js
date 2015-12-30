@@ -14,12 +14,14 @@ module.exports = function Connections(cb) {
 
     async.mapLimit(connections, 5, function(connectionName, fn) {
         var connectionInfo = self._config.connections[connectionName];
-        connectionInfo.name = connectionName;
 
-        // verify adapter info, be forgiving with spelling
-        var adapter = connectionInfo.adapter || connectionInfo.adaptor || false;
+        // verify adapter info
+        var adapter = connectionInfo.adapter || false;
         if (!adapter) return fn('Missing adapter for connection: ' + connectionName);
 
+        // remove adapter from connection config so that adapter
+        // doesn't have to whitelist/modify config object
+        delete connectionInfo.adapter;
 
         // verify the adapter implements a `registerConnection` method
         if (!adapter.registerConnection || !_.isFunction(adapter.registerConnection) || adapter.registerConnection.length !== 2) {
@@ -28,7 +30,7 @@ module.exports = function Connections(cb) {
 
         adapter.registerConnection(connectionInfo, function(err, connection) {
             if (err) {
-                console.log(err);
+                self.log('error', err);
                 return fn('There was an error creating the connection (' + connectionName + ')');
             }
             if (!connection) return fn('No connection object was returned by the adapter (' + connectionInfo.adapter + ') for a connection (' + connectionInfo.name + ')');
