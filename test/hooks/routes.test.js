@@ -3,6 +3,7 @@
 
 var asyncjs = require('async'),
     expect = require('chai').expect,
+    Microservice = require('../../index'),
     sinon = require('sinon'),
     supertest = require('supertest');
 
@@ -11,6 +12,34 @@ describe('[hook] routes', function() {
 
     before(function() {
         request = supertest.agent(microservice.server);
+    });
+
+
+    it('should return successfully with no errors', function(done) {
+        var cwd = process.cwd();
+        process.chdir(__dirname + '/routes/test-app-no-problems');
+
+        var _microservice = new Microservice({});
+
+        _microservice.start(function(err) {
+            process.chdir(cwd);
+            expect(err).to.not.exist;
+            done();
+        });
+    });
+
+
+    it('should return an error if no `/app/routes.js` file is defined', function(done) {
+        var cwd = process.cwd();
+        process.chdir(__dirname + '/routes/test-app-no-routes');
+
+        var _microservice = new Microservice({});
+
+        _microservice.start(function(err) {
+            process.chdir(cwd);
+            expect(err).to.exist;
+            done();
+        });
     });
 
 
@@ -359,5 +388,193 @@ describe('[hook] routes', function() {
                     });
             }
         ], done);
+    });
+
+
+    context('coverage tests', function() {
+        it('should return an error if an invalid route definition is defined', function(done) {
+            var cwd = process.cwd();
+            process.chdir(__dirname + '/routes/test-app-invalid-definition');
+
+            var _microservice = new Microservice();
+            _microservice.start(function(err) {
+                process.chdir(cwd);
+                expect(err).to.exist;
+                done();
+            });
+        });
+
+
+        it('should return an error if a handler is not a valid type', function(done) {
+            var cwd = process.cwd();
+            process.chdir(__dirname + '/routes/test-app-invalid-handler-type');
+
+            var _microservice = new Microservice({
+                hooks: ['server', 'routes']
+            });
+
+            _microservice.start(function(err) {
+                process.chdir(cwd);
+                expect(err).to.exist;
+                done();
+            });
+        });
+
+
+        it('should return an error if an object type handler is defined with no `handler` attribute', function(done) {
+            var cwd = process.cwd();
+            process.chdir(__dirname + '/routes/test-app-no-handler');
+
+            var _microservice = new Microservice({
+                hooks: ['server', 'routes']
+            });
+
+            _microservice.start(function(err) {
+                process.chdir(cwd);
+                expect(err).to.exist;
+                done();
+            });
+        });
+
+
+        it('should return an error if an object handler is defined with an invalid type `handler` attribute', function(done) {
+            var cwd = process.cwd();
+            process.chdir(__dirname + '/routes/test-app-nested-invalid-handler');
+
+            var _microservice = new Microservice({
+                server: {
+                    port: 8081
+                },
+                hooks: ['server', 'routes']
+            });
+
+            _microservice.start(function(err) {
+                process.chdir(cwd);
+                expect(err).to.exist;
+                done();
+            });
+        });
+
+
+        it('should return an error if a string type policy is specified but not defined', function(done) {
+            var cwd = process.cwd();
+            process.chdir(__dirname + '/routes/test-app-missing-policy');
+
+            var _microservice = new Microservice({
+                server: {
+                    port: 8081
+                },
+                hooks: ['server', 'policies', 'routes']
+            });
+
+            _microservice.start(function(err) {
+                process.chdir(cwd);
+                expect(err).to.exist;
+                done();
+            });
+        });
+
+
+        it('should return an error if there is an error while attempting to bind the route', function(done) {
+            var cwd = process.cwd();
+            process.chdir(__dirname + '/routes/test-app-no-problems');
+
+            var _microservice = new Microservice({
+                server: {
+                    port: 8081
+                },
+                hooks: [
+                    'server',
+                    function(cb) {
+                        sinon.stub(_microservice.server, 'get').throws();
+                        cb();
+                    },
+                    'routes'
+                ]
+            });
+
+            _microservice.start(function(err) {
+                process.chdir(cwd);
+                _microservice.server.get.restore();
+                expect(err).to.exist;
+                done();
+            });
+        });
+
+
+        it('should return an error if a string handler is defined without both a controller and an action', function(done) {
+            var cwd = process.cwd();
+            process.chdir(__dirname + '/routes/test-app-invalid-string-handler');
+
+            var _microservice = new Microservice({
+                server: {
+                    port: 8081
+                },
+                hooks: ['server', 'controllers', 'routes']
+            });
+
+            _microservice.start(function(err) {
+                process.chdir(cwd);
+                expect(err).to.exist;
+                done();
+            });
+        });
+
+
+        it('should return an error if the handler\'s controller cannot be found', function(done) {
+            var cwd = process.cwd();
+            process.chdir(__dirname + '/routes/test-app-missing-controller');
+
+            var _microservice = new Microservice({
+                server: {
+                    port: 8081
+                },
+                hooks: ['server', 'controllers', 'routes']
+            });
+
+            _microservice.start(function(err) {
+                process.chdir(cwd);
+                expect(err).to.exist;
+                done();
+            });
+        });
+
+
+        it('should return an error if the handler\'s action cannot be found on the specified controller', function(done) {
+            var cwd = process.cwd();
+            process.chdir(__dirname + '/routes/test-app-missing-action');
+
+            var _microservice = new Microservice({
+                server: {
+                    port: 8081
+                },
+                hooks: ['server', 'controllers', 'routes']
+            });
+
+            _microservice.start(function(err) {
+                process.chdir(cwd);
+                expect(err).to.exist;
+                done();
+            });
+        });
+
+
+        it('should return an error if the handler\'s action is not a function', function(done) {
+            var cwd = process.cwd();
+            process.chdir(__dirname + '/routes/test-app-invalid-action-type');
+
+            var _microservice = new Microservice({
+                server: {
+                    port: 8081
+                },
+                hooks: ['server', 'controllers', 'routes']
+            });
+
+            _microservice.start(function(err) {
+                process.chdir(cwd);
+                expect(err).to.exist;
+                done();
+            });
+        });
     });
 });

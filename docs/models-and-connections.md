@@ -28,13 +28,8 @@ module.exports = {
             database: process.env.MONGO_DB
         },
 
-        // define which models should use this connection
-        include: [
-            // make this the default connection, if no other
-            // connection includes a model explicitly, this
-            // connection's adapter will be used
-            '*'
-        ]
+        // designate the default connection
+        default: true
     },
 
     // define another connection
@@ -52,18 +47,12 @@ module.exports = {
                 idle: 10000
             },
         },
-        include: [
+        models: [
             // include the `/app/models/permissions.js` model explicitly
             'permissions',
             // include all model definitions found in the
             // `/app/models/blog` folder
             'blog/*'
-        ],
-        exclude: [
-            // do not include the `/app/models/blog/images.js` file
-            // if not explicitly included in another connection
-            // this file will use the default adapter
-            'blog/images'
         ]
     }
 };

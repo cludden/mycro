@@ -1,6 +1,7 @@
 'use strict';
 
-var async = require('async'),
+var asyncjs = require('async'),
+    pathToRegex = require('path-to-regexp'),
     _ = require('lodash');
 
 module.exports = function Connections(cb) {
@@ -12,29 +13,34 @@ module.exports = function Connections(cb) {
         return cb();
     }
 
-    async.mapLimit(connections, 5, function(connectionName, fn) {
+    asyncjs.mapLimit(connections, 5, function(connectionName, fn) {
         var connectionInfo = self._config.connections[connectionName];
-        connectionInfo.name = connectionName;
 
         // verify adapter info, be forgiving with spelling
-        var adapter = connectionInfo.adapter || connectionInfo.adaptor || false;
-        if (!adapter) return fn('Missing adapter for connection: ' + connectionName);
-
+        var adapter = connectionInfo.adapter;
+        if (!adapter) {
+            return fn('Missing adapter for connection: ' + connectionName);
+        }
 
         // verify the adapter implements a `registerConnection` method
         if (!adapter.registerConnection || !_.isFunction(adapter.registerConnection) || adapter.registerConnection.length !== 2) {
-            return fn('Invalid adapter api');
+            return fn('Invalid adapter api. Adapters should define a `registerConnection` method that accepts a config object and callback function');
         }
 
-        adapter.registerConnection(connectionInfo, function(err, connection) {
+        adapter.registerConnection(connectionInfo.config, function(err, connection) {
             if (err) {
-                console.log(err);
                 return fn('There was an error creating the connection (' + connectionName + ')');
             }
-            if (!connection) return fn('No connection object was returned by the adapter (' + connectionInfo.adapter + ') for a connection (' + connectionInfo.name + ')');
+            if (!connection) {
+                return fn('No connection object was returned by the adapter (' + connectionInfo.adapter + ') for a connection (' + connectionInfo.name + ')');
+            }
             self.connections[connectionName] = {
                 adapter: adapter,
-                connection: connection
+                connection: connection,
+                default: connectionInfo.default || connections.length === 1,
+                models: (connectionInfo.models || []).map(function(path) {
+                    return pathToRegex(path);
+                })
             };
             fn();
         });
