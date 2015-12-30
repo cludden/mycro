@@ -198,10 +198,61 @@ describe('[hook] routes', function() {
 
 
     it('should allow function policies', function(done) {
-        request.del('/api/users/1')
-            .set('x-user-id', 2)
-            .expect(403)
-            .end(done);
+        asyncjs.parallel([
+            function(fn) {
+                request.get('/api/users/1')
+                    .set('x-user-id', 2)
+                    .expect(403)
+                    .end(fn);
+            },
+            function(fn) {
+                request.get('/api/users/2')
+                    .set('x-user-id', 1)
+                    .expect(200)
+                    .end(fn);
+            },
+            function(fn) {
+                request.get('/api/users/3')
+                    .set('x-user-id', 3)
+                    .expect(200)
+                    .end(fn);
+            }
+        ], done);
+    });
+
+
+    it('should allow multiple levels of function policies', function(done) {
+        asyncjs.parallel([
+            function(fn) {
+                request.put('/api/users/1')
+                    .expect(401)
+                    .end(fn);
+            },
+            function(fn) {
+                request.put('/api/users/1')
+                    .set('x-user-id', 2)
+                    .expect(403)
+                    .end(fn);
+            },
+            function(fn) {
+                request.put('/api/users/2')
+                    .set('x-user-id', 2)
+                    .expect(200)
+                    .expect(function(res) {
+                        expect(res.headers['x-blacklist']).to.equal('id,email,last,mobile');
+                    })
+                    .end(fn);
+            },
+            function(fn) {
+                request.put('/api/users/2')
+                    .set('x-user-id', 1)
+                    .expect(200)
+                    .expect(function(res) {
+                        expect(res.headers['x-blacklist']).to.equal('id');
+                    })
+                    .end(fn);
+            }
+        ], done);
     });
 
 

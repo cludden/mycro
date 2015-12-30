@@ -46,7 +46,7 @@ module.exports = {
 
     update: function(req, res) {
         var model = req.options.model;
-        req.microservice.services['data'].update(model, req.params.id, function(err, updated) {
+        req.microservice.services['data'].update(model, req.params.id, req.body, function(err, updated) {
             if (err) {
                 return res.json(500, {error: err});
             }

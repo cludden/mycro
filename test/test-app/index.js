@@ -1,6 +1,6 @@
 'use strict';
 
-var Microservice = require('restify-microservice'),
+var Microservice = require('../../index.js'),
     m = new Microservice();
 
 m.start(function(err) {

@@ -23,6 +23,7 @@
     "joi": "^7.0.1",
     "lodash": "^3.10.1",
     "merge-defaults": "^0.2.1",
+    "path-to-regexp": "^1.2.1",
     "restify": "^4.0.3",
     "winston": "^1.1.1"
   },
@@ -34,6 +35,7 @@
     "moment": "^2.10.6",
     "morgan": "^1.6.1",
     "numeral": "^1.5.3",
+    "restify-microservice-mongoose-rest": "0.0.1",
     "sinon": "^1.17.2",
     "sinon-chai": "^2.8.0",
     "supertest": "^1.1.0"

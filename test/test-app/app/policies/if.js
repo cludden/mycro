@@ -1,18 +1,35 @@
 'use strict';
 
-module.exports = function(test, response) {
+var asyncjs = require('async'),
+    _ = require('lodash');
+
+module.exports = function(test, trueFn, falseFn) {
     return function(req, res, next) {
         var fakeRes = {
-            json: function() {},
+            json: _.noop,
             status: function() {
                 return {
-                    send: function() {}
+                    send: _.noop
                 };
             }
         };
-        test(req, fakeRes, function(err) {
-            if (err) return next(err);
-            response(req, res, next);
+
+        asyncjs.waterfall([
+            function runTest(fn) {
+                test(req, fakeRes, function(err) {
+                    if (err) return fn(null, false);
+                    fn(null, true);
+                });
+            },
+
+            function handleResult(passed, fn) {
+                var handler = trueFn;
+                if (!passed) handler = falseFn;
+                if (!handler) return fn();
+                handler(req, res, fn);
+            }
+        ], function() {
+            return next();
         });
     };
 };

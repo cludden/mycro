@@ -11,7 +11,8 @@ module.exports = function() {
         req.options = req.options || {};
         req.options.blacklist = req.options.blacklist || [];
         req.options.blacklist = _.uniq(req.options.blacklist.concat(items));
-        req.microservice.log('silly', '[policy] blacklist executed');
+        req.microservice.log('silly', '[policy] blacklist: added to blacklist:', items);
+        res.set('x-blacklist', items.join(','));
         next();
     };
 };

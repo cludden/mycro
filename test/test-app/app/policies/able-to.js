@@ -5,7 +5,6 @@ var asyncjs = require('async'),
 
 module.exports = function(ability, resource) {
     return function(req, res, next) {
-        req.microservice.log('silly', '[policy] able-to (' + ability + ', ' + resource + ') called');
         if (!req.user) {
             var e = 'unauthenticated';
             res.json(401, {error: e});

@@ -107,14 +107,15 @@ module.exports = function(microservice) {
                         put: {
                             additionalPolicies: [
                                 microservice.policies['or'](
-                                    microservice.policies['if'](
-                                        microservice.policies['is-equal']('user.id', 'params.id'),
-                                        microservice.policies['blacklist']('email', 'last', 'mobile')
+                                    microservice.policies['is-equal']('user.id', 'params.id'),
+                                    microservice.policies['able-to']('manage', 'users')
+                                ),
+                                microservice.policies['if'](
+                                    microservice.policies['not'](
+                                        microservice.policies['able-to']('manage', 'users')
                                     ),
-                                    microservice.policies['if'](
-                                        microservice.policies['able-to']('manage', 'users'),
-                                        microservice.policies['blacklist']('id', {reset: true})
-                                    )
+                                    microservice.policies['blacklist']('id', 'email', 'last', 'mobile'),
+                                    microservice.policies['blacklist']('id')
                                 )
                             ],
                             handler: 'rest.update'

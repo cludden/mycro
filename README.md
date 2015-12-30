@@ -22,6 +22,8 @@ To provide a highly customizable platform for a well-organized [restify.js](http
 5. [Policies](/docs/policies.md)
 6. [Routing (Part II)](/docs/routing-02.md)
 7. [Models and Connections](/docs/models-and-connections.md)
+8. [Middleware](/docs/middleware.md)
+9. [Configuration](/docs/configuration.md)
 
 ## Bundled Hooks
 `restify-microservice` comes bundled with the following hooks:
@@ -95,10 +97,10 @@ module.exports = function(done) {
 ```
 
 
-## Installable Hooks
+## Installable Hooks & Adapters
 To use these hooks, simply install them via `npm install --save <insert hook name here>` and require them in your `config/hooks.js` file.
 - [restify-microservice-mongoose](https://github.com/cludden/restify-microservice-mongoose)
-    - Auto compile mongoose models and make them available at `microservice.models`
+    - mongoose adapter
 - [restify-microservice-mongoose-rest](https://github.com/cludden/restify-microservice-mongoose-rest)
     - Creates restful mongoose controllers for your mongoose models using [restify-mongoose](https://github.com/saintedlama/restify-mongoose)
 

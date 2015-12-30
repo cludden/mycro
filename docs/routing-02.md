@@ -74,7 +74,7 @@ module.exports = {
             handler: 'crud.update'
         }
     }
-}
+};
 ```
 
 In addition to policies, the api allows you to specify regex routes and version routes using `resitfy`'s versioning capabilities. See the `restify` docs for more info.

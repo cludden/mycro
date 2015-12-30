@@ -14,18 +14,17 @@ describe('restify-microservice', function() {
         var originalDir = process.cwd();
         process.chdir(__dirname + '/../test-app-2');
 
-        sinon.spy(require('restify-microservice-routes'), 'hook');
+        sinon.spy(require('../../hooks/routes'), 'hook');
         var Microservice = require('../../index'),
             m = new Microservice({
                 hooks: [
-                    'restify-microservice-routes'
+                    'restify-microservice-mongoose-rest'
                 ]
             });
 
         m.start(function(err) {
             expect(err).to.not.exist;
-            expect(require('restify-microservice-routes').hook).to.have.been.called;
-            require('restify-microservice-routes').hook.restore();
+            require('../../hooks/routes').hook.restore();
             process.chdir(originalDir);
             done();
         });
@@ -55,18 +54,19 @@ describe('restify-microservice', function() {
         var originalDir = process.cwd();
         process.chdir(__dirname + '/../test-app-2');
 
-        sinon.stub(require('restify-microservice-routes'), 'hook').yieldsAsync('Something unexpected');
+        sinon.stub(require('../../hooks/routes'), 'hook').yieldsAsync('Something unexpected');
         var Microservice = require('../../index'),
             m = new Microservice({
                 hooks: [
-                    'restify-microservice-routes'
+                    'server',
+                    'routes'
                 ]
             });
 
         m.start(function(err) {
             expect(err).to.exist;
-            expect(require('restify-microservice-routes').hook).to.have.been.called;
-            require('restify-microservice-routes').hook.restore();
+            expect(require('../../hooks/routes').hook).to.have.been.called;
+            require('../../hooks/routes').hook.restore();
             process.chdir(originalDir);
             done();
         });
@@ -77,11 +77,11 @@ describe('restify-microservice', function() {
         var originalDir = process.cwd();
         process.chdir(__dirname + '/../test-app-2');
 
-        sinon.spy(require('restify-microservice-routes'), 'hook');
         var Microservice = require('../../index'),
             m = new Microservice({
                 hooks: [
-                    'restify-microservice-routes',
+                    'server',
+                    'routes',
                     3,
                     {hook: 'does not matter'}
                 ]
@@ -89,14 +89,12 @@ describe('restify-microservice', function() {
 
         m.start(function(err) {
             expect(err).to.not.exist;
-            expect(require('restify-microservice-routes').hook).to.have.been.called;
-            require('restify-microservice-routes').hook.restore();
             process.chdir(originalDir);
             done();
         });
     });
 
-    
+
     it('should only start the server when a numeric port is provided and a `microservice.server.listen` method is defined', function(done) {
         var originalDir = process.cwd();
         process.chdir(__dirname + '/../test-app-2');

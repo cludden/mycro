@@ -1,5 +1,5 @@
 'use strict';
 
 module.exports.restify = {
-    name: 'restify-microbial'
+    name: 'restify-microservice'
 };
