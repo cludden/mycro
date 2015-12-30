@@ -17,12 +17,12 @@ module.exports = function Models(cb) {
     });
 
     async.mapLimit(_.keys(models), 5, function(name, fn) {
-        // get model definition
-        var modelDefinition = models[name];
-        modelDefinition.name = name;
+        // get model
+        var model = models[name];
+        model.name = name;
 
         // get connection name
-        var connectionName = modelDefinition.connection || self._config.models.connection || false;
+        var connectionName = model.connection || self._config.models.connection || false;
         if (!connectionName) return fn('No connection name specified for model (' + name + ')');
 
         // get connection
@@ -44,7 +44,7 @@ module.exports = function Models(cb) {
         }
 
         // hand off to adapter
-        adapter.registerModel(connection.connection, modelDefinition, function(err, model) {
+        adapter.registerModel(connection.connection, model.definition, function(err, model) {
             if (err) return fn(err);
             self.models[name] = model;
             fn();
