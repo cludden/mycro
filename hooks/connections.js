@@ -14,21 +14,19 @@ module.exports = function Connections(cb) {
 
     async.mapLimit(connections, 5, function(connectionName, fn) {
         var connectionInfo = self._config.connections[connectionName];
+        // TODO is this being used?
+        connectionInfo.name = connectionName;
 
         // verify adapter info
         var adapter = connectionInfo.adapter || false;
         if (!adapter) return fn('Missing adapter for connection: ' + connectionName);
-
-        // remove adapter from connection config so that adapter
-        // doesn't have to whitelist/modify config object
-        delete connectionInfo.adapter;
 
         // verify the adapter implements a `registerConnection` method
         if (!adapter.registerConnection || !_.isFunction(adapter.registerConnection) || adapter.registerConnection.length !== 2) {
             return fn('Invalid adapter api');
         }
 
-        adapter.registerConnection(connectionInfo, function(err, connection) {
+        adapter.registerConnection(connectionInfo.config, function(err, connection) {
             if (err) {
                 self.log('error', err);
                 return fn('There was an error creating the connection (' + connectionName + ')');
