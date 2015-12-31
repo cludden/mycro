@@ -1,6 +1,3 @@
-## Configuration
-Hooks can be configured using config files located in the `/config` folder. Some common configuration options are outlined below.
-
 ## Logging
 `restify-microservice` comes bundled with a [winston](https://github.com/winstonjs/winston) logger. You can override this by defining your own logger in `/config/logger.js`, which must export a function that returns a constructor for your custom logger. The default logger configuration is shown below.
 ```javascript

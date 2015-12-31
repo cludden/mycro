@@ -1,8 +1,6 @@
 'use strict';
 
 var asyncjs = require('async'),
-    expect = require('chai').expect,
-    sinon = require('sinon'),
     supertest = require('supertest');
 
 describe('GET /api/admin/config', function() {

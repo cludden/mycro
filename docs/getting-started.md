@@ -25,6 +25,7 @@ A typical `restify-microservice` project structure:
       - **/policies**
       - **/routes**
       - **/services**
+      - routes.js
     - **/config**
     - **/hooks**
     - index.js
