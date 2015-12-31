@@ -1,7 +1,6 @@
 # restify-microservice
+![Build Status](https://travis-ci.org/cludden/restify-microservice.svg?branch=master)](https://travis-ci.org/cludden/restify-microservice)  
 a [restify.js](http://restify.com) based microservice library, inspired by [sails.js](http://sailsjs.org)  
-
-*Note: this is still a work in progress. There may be bugs in the code, and the api is subject to change. Also, better docs and more tests are coming. In the meantime, check out the dummy app in the /test directory*
 
 
 ## Install
@@ -22,8 +21,10 @@ To provide a highly customizable platform for a well-organized [restify.js](http
 5. [Policies](/docs/policies.md)
 6. [Routing (Part II)](/docs/routing-02.md)
 7. [Models and Connections](/docs/models-and-connections.md)
-8. [Middleware](/docs/middleware.md)
-9. [Configuration](/docs/configuration.md)
+
+## Configuration
+8. [Server & Middleware](/docs/middleware.md)
+9. [Logging](/docs/logging.md)
 
 ## Bundled Hooks
 `restify-microservice` comes bundled with the following hooks:

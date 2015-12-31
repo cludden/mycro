@@ -37,7 +37,7 @@ module.exports = {
             },
 
             // process definition
-            definition: ['validate', function processDefinition(fn, r) {
+            definition: ['validate', function processDefinition(fn) {
                 var definition = options.definition;
                 // handle string definition by looking up inclusion in available routes
                 if (_.isString(definition)) {

@@ -1,8 +1,7 @@
 /* jshint expr:true */
 'use strict';
 
-var asyncjs = require('async'),
-    chai = require('chai'),
+var chai = require('chai'),
     sinon = require('sinon'),
     expect = chai.expect;
 
@@ -36,7 +35,7 @@ describe('[hook] services', function() {
 
     it('should enable services to utilize other services', function(done) {
         sinon.spy(microservice.services['error'], 'notify');
-        microservice.services['format/date'].format('gibberish', 'YYYY MM DD', function(err, formatted) {
+        microservice.services['format/date'].format('gibberish', 'YYYY MM DD', function(err) {
             expect(err).to.exist;
             expect(microservice.services['error'].notify).to.have.been.calledWith('Invalid date');
             done();

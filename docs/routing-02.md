@@ -8,13 +8,13 @@ module.exports = function(microservice) {
         '/api': {
             // define the policy chain for a particular path and all of it's subpaths and routes
             policies: [
-                // all routes at /api/* will execute the `authenticate` policy, defined
+                // all routes at /api/* will execute the `authenticated` policy, defined
                 // at /app/policies/authenticated.js
                 'authenticated'
             ],
             '/admin': {
                 // define additional policies for routes at /api/admin/*. These policies will be
-                // added to the current policy chain
+                // added to the current policy chain (after `authenticated` in this case)
                 additionalPolicies: [
                     microservice.policies['or'](
                         'isSuperAdmin', // normal policies can be called via their file name
@@ -24,7 +24,7 @@ module.exports = function(microservice) {
                 routes: 'admin'
             },
             '/blog': {
-                // we can overwrite/redefine the current policies for a path, subpath, or
+                // we can overwrite, clear, or redefine the current policies for a path, subpath, or
                 // route by providing a `policies` attribute with a new definition
                 policies: [],
                 '/comments': {

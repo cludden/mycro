@@ -343,7 +343,7 @@ describe('[hook] routes', function() {
                     .end(function(err) {
                         expect(microservice.services['data'].find).to.have.been.called;
                         microservice.services['data'].find.restore();
-                        done(err);
+                        fn(err);
                     });
             },
 
@@ -355,9 +355,9 @@ describe('[hook] routes', function() {
                     .end(function(err) {
                         expect(microservice.services['data'].find).to.have.been.called;
                         microservice.services['data'].find.restore();
-                        done(err);
+                        fn(err);
                     });
             }
-        ]);
+        ], done);
     });
 });
