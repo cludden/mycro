@@ -42,5 +42,10 @@ module.exports = function Server(cb) {
         }
     });
 
+    // TODO discuss placement
+    // parse query and body
+    self.server.use(restify.queryParser());
+    self.server.use(restify.bodyParser({ mapParams: true }));
+
     cb();
 };
