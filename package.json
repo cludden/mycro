@@ -1,13 +1,13 @@
 {
   "name": "restify-microservice",
   "version": "0.0.3",
-  "description": "a restify based microservice",
+  "description": "a restify.js based microservice library, inspired by sails.js",
   "main": "index.js",
   "scripts": {
     "test": "mocha test/index.test.js test/basic/* test/hooks/* --recursive"
   },
   "keywords": [
-    "microbial",
+    "restify-microservice",
     "microservice",
     "restify"
   ],
