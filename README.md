@@ -99,11 +99,19 @@ module.exports = function(done) {
 
 
 ## Installable Hooks & Adapters
+**Hooks**
 To use these hooks, simply install them via `npm install --save <insert hook name here>` and require them in your `config/hooks.js` file.
-- [restify-microservice-mongoose](https://github.com/cludden/restify-microservice-mongoose)
-    - mongoose adapter
+
+
 - [restify-microservice-mongoose-rest](https://github.com/cludden/restify-microservice-mongoose-rest)
     - Creates restful mongoose controllers for your mongoose models using [restify-mongoose](https://github.com/saintedlama/restify-mongoose)
+
+    
+**Adapters**
+- [restify-microservice-mongoose](https://github.com/cludden/restify-microservice-mongoose)
+    - mongoose adapter
+
+
 
 
 ## Testing
