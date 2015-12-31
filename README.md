@@ -1,5 +1,7 @@
 # restify-microservice
 [![Build Status](https://travis-ci.org/cludden/restify-microservice.svg?branch=master)](https://travis-ci.org/cludden/restify-microservice)
+
+
 a [restify.js](http://restify.com) based microservice library, inspired by [sails.js](http://sailsjs.org)  
 
 
@@ -100,6 +102,8 @@ module.exports = function(done) {
 
 ## Installable Hooks & Adapters
 **Hooks**
+
+
 To use these hooks, simply install them via `npm install --save <insert hook name here>` and require them in your `config/hooks.js` file.
 
 
@@ -108,6 +112,8 @@ To use these hooks, simply install them via `npm install --save <insert hook nam
 
     
 **Adapters**
+
+
 - [restify-microservice-mongoose](https://github.com/cludden/restify-microservice-mongoose)
     - mongoose adapter
 
