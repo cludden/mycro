@@ -1,7 +1,6 @@
 'use strict';
 
-var async = require('async'),
-    include = require('include-all'),
+var include = require('include-all'),
     _ = require('lodash');
 
 module.exports = function Controllers(cb) {

@@ -1,7 +1,6 @@
 'use strict';
 
 var expect = require('chai').expect,
-    sinon = require('sinon'),
     supertest = require('supertest');
 
 describe('GET /api/admin/cache/clear', function() {
@@ -35,7 +34,7 @@ describe('GET /api/admin/cache/clear', function() {
             .set('x-user-id', 1)
             .send({path: 'user:*'})
             .expect(200)
-            .end(function(err, res) {
+            .end(function(err) {
                 done();
             });
     });

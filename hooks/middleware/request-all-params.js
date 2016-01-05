@@ -9,7 +9,7 @@ var _ = require('lodash'),
  *
  * @param  {Object} microservice
  */
-module.exports = function(microservice) {
+module.exports = function() {
     return function request(req, res, next) {
         var queryParams = _.clone(req.query, true),
             bodyParams = _.clone(req.body, true),

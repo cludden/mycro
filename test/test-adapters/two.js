@@ -36,7 +36,7 @@ module.exports = {
                 modelNames: function() {
                     return models.slice();
                 },
-                model: function(name, schema) {
+                model: function(name) {
                     models.push(name);
                     return {
                         belongsTo: _.noop,
