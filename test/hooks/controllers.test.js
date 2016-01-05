@@ -1,8 +1,5 @@
 /* jshint expr:true */
-
-var chai = require('chai'),
-    sinon = require('sinon'),
-    expect = chai.expect;
+var expect = require('chai').expect;
 
 describe('[hook] controllers', function() {
     it('should load controllers at `microservice.controllers`', function() {

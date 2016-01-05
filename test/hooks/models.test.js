@@ -6,7 +6,7 @@ var expect = require('chai').expect,
     sinon = require('sinon'),
     _ = require('lodash');
 
-describe('[hook] models', function(done) {
+describe('[hook] models', function() {
     var adapter;
 
     before(function() {

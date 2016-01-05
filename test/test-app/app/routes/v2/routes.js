@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function(microservice) {
+module.exports = function() {
     return {
         '/healthy': {
             get: function(req, res) {

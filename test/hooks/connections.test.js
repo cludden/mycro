@@ -79,7 +79,12 @@ describe('[hook] connections', function() {
 
     it('should return an error if the adapter\'s `registerConnection` method returns an error', function(done) {
         var adapter = {
-            registerConnection: function(config, cb) {}
+            registerConnection: function(config, cb) {
+                var myconfig = {
+                    config: config
+                };
+                cb(null, myconfig);
+            }
         };
         sinon.stub(adapter, 'registerConnection').yieldsAsync(new Error('Something Unexpected'));
 

@@ -4,7 +4,7 @@ var Baobab = require('baobab'),
     include = require('include-all'),
     _ = require('lodash');
 
-module.exports = function(microservice) {
+module.exports = function() {
     var models = include({
         dirname:  __dirname + '/../fixtures',
         filter:  /(.+)\.js$/,

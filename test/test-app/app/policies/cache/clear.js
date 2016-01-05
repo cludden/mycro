@@ -19,7 +19,7 @@ module.exports = function(req, res, next) {
             });
         },
 
-        groups: ['validate', function findUserGroups(fn, r) {
+        groups: ['validate', function findUserGroups(fn) {
             req.microservice.services['data'].find('groups', {users: [1]}, function(err, groups) {
                 if (err) {
                     res.json(500, {error: err});

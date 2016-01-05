@@ -1,7 +1,6 @@
 'use strict';
 
-var pathToRegex = require('path-to-regexp'),
-    _ = require('lodash');
+var _ = require('lodash');
 
 module.exports = {
     findConnection: function(microservice, modelName) {
