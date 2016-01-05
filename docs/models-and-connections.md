@@ -8,7 +8,8 @@ Database connections can be defined in `/config/connections.js` file. Each conne
 
 */config/connections.js*
 ```javascript
-var mongooseAdapter = require('restify-microservice-mongoose');
+var mongooseAdapter = require('restify-microservice-mongoose'),
+    sequelizeAdapter = require('restify-microservice-sequelize');
 
 module.exports = {
     // define a name for you connection
@@ -16,40 +17,57 @@ module.exports = {
         // provide an adapter for the connection (required)
         adapter: mongooseAdapter,
 
-        // all other info is adapter specific, meaning it is info
-        // required by the adapter to create the connection
-        host: process.env.DB_HOST || 'localhost',
-        port: process.env.DB_PORT || 27017,
-        user: process.env.DB_USERNAME,
-        password: process.env.DB_PASSWORD,
-        database: process.env.DB_NAME
+        // the config object is passed to the adapter and should
+        // provide all necessary info for establishing the
+        // connection or configuring the adapter in general
+        config: {
+            host: process.env.MONGO_HOST || 'localhost',
+            port: process.env.MONGO_PORT || 27017,
+            user: process.env.MONGO_USERNAME,
+            password: process.env.MONGO_PASSWORD,
+            database: process.env.MONGO_DB
+        },
+
+        // designate the default connection
+        default: true
     },
 
     // define another connection
     mysql: {
-        // ..
+        adapter: sequelizeAdapter,
+        config: {
+            host: process.env.MYSQL_HOST,
+            user: process.env.MYSQL_USERNAME,
+            password: process.env.MYSQL_PASSWORD,
+            database: process.env.MYSQL_DB,
+            dialect: 'mysql',
+            pool: {
+                max: 5,
+                min: 0,
+                idle: 10000
+            },
+        },
+        models: [
+            // include the `/app/models/permissions.js` model explicitly
+            'permissions',
+            // include all model definitions found in the
+            // `/app/models/blog` folder
+            'blog/*'
+        ]
     }
 };
 ```
 
 
 ## Models
-Model definitions can be defined in the `/app/models` folder. Each definition should specify the connection to use, or you should specify a default connection in the `/config/models.js` file. Model configurations can and will vary based on the adapter being used. See adapter docs for configuration info.
-
-The `models` hook is responsible for looping through all configuration files found in the `/app/models` folder and subfolders and handing them off to the connection's adapter for construction.
+The `models` hook is responsible for looping through all files found in the `/app/models` folder and subfolders and handing them off to the appropriate adapter for construction. Each model file should export a model definition that the adapter will use to build the model. Model definitions can and will vary based on the adapter being used. See adapter docs for configuration info.
 
 
-*/config/models.js*
-```javascript
-module.exports = {
-    // define a default connection to use
-    connection: 'mongo'
-};
-```
 */app/models/users.js*
 ```javascript
 var mongoose = require('mongoose'),
-    phone = require('phone');
+    phone = require('phone'),
+    _ = require('lodash');
 
 module.exports = {
     schemaOptions: {
@@ -98,6 +116,13 @@ module.exports = {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'groups'
         }]
+    },
+    virtuals: {
+        fullName: {
+            get: function() {
+                return _.capitalize(this.first) + ' ' + _.capitalize(this.last);
+            }
+        }
     }
 };
 ```

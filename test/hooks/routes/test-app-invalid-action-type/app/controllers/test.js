@@ -1,6 +1,5 @@
 'use strict';
 
 module.exports = {
-    config: {},
-    middleware: []
+    action: 3
 };

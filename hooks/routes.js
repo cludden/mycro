@@ -16,7 +16,7 @@ module.exports.hook = function(cb) {
         if (_.isFunction(definition)) definition = definition(microservice);
     } catch (err) {
         microservice.log('info', '[Routes] no routes found');
-        return cb();
+        return cb(err);
     }
 
     var routes = include({

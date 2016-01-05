@@ -1,14 +1,15 @@
 'use strict';
 
-var async = require('async'),
+var asyncjs = require('async'),
     include = require('include-all'),
+    lib = require('./models/index'),
     _ = require('lodash');
 
 module.exports = function Models(cb) {
-    var self = this;
-    self.models = {};
+    var microservice = this;
+    microservice.models = {};
 
-    var models = include({
+    var modelDefinitions = include({
         dirname: process.cwd() + '/app/models',
         filter:  /(.+)\.js$/,
         keepDirectoryPath: true,
@@ -16,41 +17,67 @@ module.exports = function Models(cb) {
         optional:  true
     });
 
-    async.mapLimit(_.keys(models), 5, function(name, fn) {
-        // get model definition
-        var modelDefinition = models[name];
-        modelDefinition.name = name;
-
-        // get connection name
-        var connectionName = modelDefinition.connection || self._config.models.connection || false;
-        if (!connectionName) return fn('No connection name specified for model (' + name + ')');
-
-        // get connection
-        var connection = connectionName ? self.connections[connectionName] : false;
-        if (!connection) return fn('Unable to find connection object for connection (' + connectionName + ')');
-
-        // get adapter
-        var adapter = connection.adapter;
-        if (!adapter) return fn('Unable to find adapter for connection (' + connectionName + ')');
-
-        // validate handler exists
-        if (!adapter.registerModel || !_.isFunction(adapter.registerModel)) {
-            return fn('Invalid adapter api: Adapters must implement a #registerModel() method');
-        }
-
-        // validate handler signature
-        if (adapter.registerModel.length !== 3) {
-            return fn('Invalid adapter api: #regsiterModel() accepts a model definition object and a callback');
-        }
-
-        // hand off to adapter
-        adapter.registerModel(connection.connection, modelDefinition, function(err, model) {
-            if (err) return fn(err);
-            self.models[name] = model;
-            fn();
-        });
-    }, function(err) {
-        if (err) return cb(err);
+    var modelNames = _.keys(modelDefinitions);
+    if (!modelNames || !modelNames.length) {
         return cb();
+    }
+
+    var defaultConnection = _.find(microservice.connections, function(config) {
+        return config.default === true;
     });
+
+    asyncjs.auto({
+        // hand model definitions to the appropriate adapter for construction
+        build: function(fn) {
+            asyncjs.each(modelNames, function(name, _fn) {
+                // get model definition
+                var modelDefinition = modelDefinitions[name];
+                modelDefinition.__name = name;
+
+                // get connection info
+                var connectionInfo = lib.findConnection(microservice, name);
+                if (!connectionInfo) {
+                    microservice.log('silly', '[models] Unable to find explicit adapter for model (' + name + ')');
+                    if (!defaultConnection ) {
+                        return _fn('Unable to find adapter for model (' + name + ')');
+                    } else {
+                        connectionInfo = defaultConnection;
+                    }
+                }
+
+                // validate handler exists
+                var adapter = connectionInfo.adapter;
+                if (!adapter.registerModel || !_.isFunction(adapter.registerModel) || adapter.registerModel.length !== 3) {
+                    return _fn('Invalid adapter api: adapters should define a `registerModel` method that accepts a connection object, model definition object, and a callback');
+                }
+
+                // hand off to adapter
+                adapter.registerModel(connectionInfo.connection, modelDefinition, function(err, model) {
+                    if (err) {
+                        return _fn(err);
+                    }
+                    if (!model) {
+                        return _fn('No model (' + name + ') returned from `adapter.registerModel`');
+                    }
+                    microservice.models[name] = model;
+                    _fn();
+                });
+            }, fn);
+        },
+
+        // once all models have been built, allow each adapter the opportunity to
+        // do additional processing
+        process: ['build', function(fn) {
+            var adapters = _.values(microservice.connections).map(function(connectionInfo) {
+                return connectionInfo.adapter;
+            });
+
+            asyncjs.each(adapters, function(adapter, _fn) {
+                if (!adapter || !_.isFunction(adapter.processModels)) {
+                    return _fn();
+                }
+                adapter.processModels(microservice.models, modelDefinitions, _fn);
+            }, fn);
+        }]
+    }, cb);
 };

@@ -1,6 +1,7 @@
 'use strict';
 
 module.exports = {
-    config: {},
-    middleware: []
+    '/test': {
+        get: 3
+    }
 };

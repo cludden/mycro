@@ -1,7 +1,5 @@
 # restify-microservice
 [![Build Status](https://travis-ci.org/cludden/restify-microservice.svg?branch=master)](https://travis-ci.org/cludden/restify-microservice)
-
-
 a [restify.js](http://restify.com) based microservice library, inspired by [sails.js](http://sailsjs.org)  
 
 
@@ -10,9 +8,8 @@ a [restify.js](http://restify.com) based microservice library, inspired by [sail
 npm install --save restify-microservice
 ```
 
-
 ## Purpose
-To provide a highly customizable platform for a well-organized [restify.js](http://restify.com) app, using `hooks`. By default, `restify-microservice` comes bundled with hooks for middleware, models, policies, routing, services, etc. However, this module allows you to implement custom hooks extremely easily, as well as disable, override, or reorder the default hooks. More importantly, this module makes no assumption regarding which other third party libraries (ORMs, middleware, templating engines, etc) you'd like to use in your app. In fact, using restify is entirely optional, and can be disabled by excluding the `server` hook or implementing your own
+To provide a highly customizable platform for a well-organized [restify.js](http://restify.com) app, using `hooks`. By default, `restify-microservice` comes bundled with hooks for middleware, models, controllers, services, policies, routing, etc. However, this module allows you to implement custom hooks extremely easily, as well as disable, override, or reorder the default hooks. More importantly, this module makes no assumption regarding which other third party libraries (ORMs, middleware, templating engines, etc) you'd like to use in your app. In fact, using restify is entirely optional, and can be disabled by excluding the `server` hook or implementing your own
 
 
 ## Docs
@@ -24,9 +21,11 @@ To provide a highly customizable platform for a well-organized [restify.js](http
 6. [Routing (Part II)](/docs/routing-02.md)
 7. [Models and Connections](/docs/models-and-connections.md)
 
+
 ## Configuration
-8. [Server & Middleware](/docs/middleware.md)
-9. [Logging](/docs/logging.md)
+- [Server & Middleware](/docs/middleware.md)
+- [Logging](/docs/logging.md)
+
 
 ## Bundled Hooks
 `restify-microservice` comes bundled with the following hooks:
@@ -110,14 +109,12 @@ To use these hooks, simply install them via `npm install --save <insert hook nam
 - [restify-microservice-mongoose-rest](https://github.com/cludden/restify-microservice-mongoose-rest)
     - Creates restful mongoose controllers for your mongoose models using [restify-mongoose](https://github.com/saintedlama/restify-mongoose)
 
-    
+
 **Adapters**
 
 
 - [restify-microservice-mongoose](https://github.com/cludden/restify-microservice-mongoose)
     - mongoose adapter
-
-
 
 
 ## Testing

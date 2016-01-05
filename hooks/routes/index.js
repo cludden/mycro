@@ -30,7 +30,9 @@ module.exports = {
                 }).required();
 
                 joi.validate(options, valid, {}, function(err, validated) {
-                    if (err) return fn(err);
+                    if (err) {
+                        return fn(err);
+                    }
                     options = validated;
                     fn();
                 });
@@ -42,16 +44,18 @@ module.exports = {
                 // handle string definition by looking up inclusion in available routes
                 if (_.isString(definition)) {
                     definition = options.routes[options.definition];
-                    if (!definition) return fn();
-                    if (_.isFunction(definition)) definition = definition(microservice);
+                    if (_.isFunction(definition)) {
+                        definition = definition(microservice);
+                    }
                     return fn(null, definition);
                 }
 
                 // augment route definition with any specified includes
                 if (definition.routes && _.isString(definition.routes)) {
                     var routesToInclude = options.routes[definition.routes];
-                    if (!routesToInclude) routesToInclude = {};
-                    if (_.isFunction(routesToInclude)) routesToInclude = routesToInclude(microservice);
+                    if (_.isFunction(routesToInclude)) {
+                        routesToInclude = routesToInclude(microservice);
+                    }
                     _.defaults(definition, routesToInclude);
                 }
                 fn(null, options.definition);
@@ -59,17 +63,15 @@ module.exports = {
 
             // process definition keys
             options: ['definition', function processDefnition(fn, r) {
-                if (!r.definition) return fn();
                 self.handleOptions(options, r.definition, fn);
             }],
 
             // bind routes defined at the current level
             routes: ['options', function bindRoutes(fn, r) {
-                if (!r.definition) return fn();
                 asyncjs.each(['del', 'get', 'head', 'post', 'put'], function(verb, _fn) {
                     if (r.definition[verb]) {
                         var routeOptions = _.cloneDeep(options);
-                        self.handleRoute(microservice, verb, options.currentPath, r.definition[verb], routeOptions, _fn);
+                        return self.handleRoute(microservice, verb, options.currentPath, r.definition[verb], routeOptions, _fn);
                     }
                     _fn();
                 }, fn);
@@ -170,8 +172,8 @@ module.exports = {
                     if (_.isString(handler.handler)) {
                         return self.processStringHandler(microservice, handler.handler, fn);
                     }
-                    return fn('Unsupported handler type for '+ verb.toUpperCase() + ' ' + path.toString());
                 }
+                return fn('Unsupported handler type for '+ verb.toUpperCase() + ' ' + path.toString());
             },
 
             bind: ['handler', function bindRoute(fn, r) {
@@ -183,6 +185,7 @@ module.exports = {
                         version: options.version
                     },
                     function(req, res, next) {
+                        /* istanbul ignore next */
                         req.options = req.options || {};
                         _.extend(req.options, options.defaultOptions);
                         next();
@@ -195,7 +198,9 @@ module.exports = {
                 // process string policies
                 var policyError;
                 policyChain = policyChain.map(function(handler) {
-                    if (_.isFunction(handler)) return handler;
+                    if (_.isFunction(handler)) {
+                        return handler;
+                    }
                     if (_.isString(handler)) {
                         var policy = microservice.policies[handler];
                         if (!policy || !_.isFunction(policy)) {
@@ -207,17 +212,22 @@ module.exports = {
                     return handler;
                 });
 
-                if (policyError) return fn('Invalid policy chain for route ' + verb.toUpperCase() + ' ' + path + ': ' + policyError);
+                if (policyError) {
+                    return fn('Invalid policy chain for route ' + verb.toUpperCase() + ' ' + path + ': ' + policyError);
+                }
 
                 microservice.log('silly', '[hook] routes :: binding route (v' + options.version + ')  ' + verb.toUpperCase() + (verb.length === 3 ? ' ' : '') + ' ' + path);
                 try {
                     microservice.server[verb].apply(microservice.server, policyChain);
+                    return fn();
                 } catch (e) {
                     return fn('There was an error while attempting to bind route: ' + e);
                 }
             }]
         }, function(err) {
-            if (err) return cb(err);
+            if (err) {
+                return cb(err);
+            }
             cb();
         });
     },

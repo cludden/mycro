@@ -78,6 +78,10 @@ module.exports = function(microservice) {
                     }
                 },
                 '/test': 'test',
+                '/test2': 'simple',
+                '/test3': {
+                    routes: 'simple'
+                },
                 '/users': {
                     options: {
                         model: 'users'
