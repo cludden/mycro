@@ -1,6 +1,6 @@
 {
   "name": "restify-microservice",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "description": "a restify.js based microservice library, inspired by sails.js",
   "main": "index.js",
   "scripts": {
