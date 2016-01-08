@@ -32,7 +32,6 @@ module.exports = function Models(cb) {
             asyncjs.each(modelNames, function(name, _fn) {
                 // get model definition
                 var modelDefinition = modelDefinitions[name];
-                modelDefinition.__name = name;
 
                 // get connection info
                 var connectionInfo = lib.findConnection(microservice, name);
