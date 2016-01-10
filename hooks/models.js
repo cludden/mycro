@@ -38,6 +38,11 @@ module.exports = function Models(cb) {
                 if (!connectionInfo) {
                     microservice.log('silly', '[models] Unable to find explicit adapter for model (' + name + ')');
                     if (!defaultConnection ) {
+                        console.log('*******************');
+                        console.log('*******************');
+                        console.log(microservice.connections);
+                        console.log('*******************');
+                        console.log('*******************');
                         return _fn('Unable to find adapter for model (' + name + ')');
                     } else {
                         connectionInfo = defaultConnection;

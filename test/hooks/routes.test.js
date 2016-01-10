@@ -20,10 +20,11 @@ describe('[hook] routes', function() {
         process.chdir(__dirname + '/routes/test-app-no-problems');
 
         var _microservice = new Microservice({});
-
+        console.log('STARTING ROUTE TEST ******************************************')
         _microservice.start(function(err) {
             process.chdir(cwd);
             expect(err).to.not.exist;
+            console.log('ENDING ROUTE TEST ******************************************')
             done();
         });
     });
