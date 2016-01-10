@@ -32,13 +32,17 @@ module.exports = function Models(cb) {
             asyncjs.each(modelNames, function(name, _fn) {
                 // get model definition
                 var modelDefinition = modelDefinitions[name];
-                modelDefinition.__name = name;
 
                 // get connection info
                 var connectionInfo = lib.findConnection(microservice, name);
                 if (!connectionInfo) {
                     microservice.log('silly', '[models] Unable to find explicit adapter for model (' + name + ')');
                     if (!defaultConnection ) {
+                        console.log('*******************');
+                        console.log('*******************');
+                        console.log(microservice.connections);
+                        console.log('*******************');
+                        console.log('*******************');
                         return _fn('Unable to find adapter for model (' + name + ')');
                     } else {
                         connectionInfo = defaultConnection;

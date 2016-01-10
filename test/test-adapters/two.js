@@ -61,5 +61,18 @@ module.exports = {
         } catch (e) {
             return cb(e);
         }
+    },
+
+    blueprintController: function(model, actions, cb) {
+        var controller = {};
+
+        actions.forEach(function(action) {
+            controller[action] = function(req, res, next) {
+                res.send(200, 'blueprint ' + action);
+                next();
+            }
+        });
+
+        cb(null, controller);
     }
 };

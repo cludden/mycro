@@ -88,6 +88,8 @@ var Microservice = function(config) {
     });
 
     self.start = function(done) {
+        console.log('CONFIG', self._config.server);
+        console.log(process.cwd());
         async.eachSeries(
             self._hooks,
             function(hook, fn) {
