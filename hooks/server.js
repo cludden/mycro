@@ -35,7 +35,7 @@ module.exports = function Server(cb) {
         }
         if (_.isString(middleware)) {
             var fn = standardMiddlewares[middleware];
-            if (_.isFunction(fn)) {
+            if (fn) {
                 self.log('silly', '[Server] loading middleware: ' + middleware);
                 return self.server.use(fn);
             }
