@@ -10,11 +10,11 @@ chai.use(sinonChai);
 before(function(done) {
     process.chdir(__dirname + '/test-app');
 
-    var Microservice = require('../'),
-        microservice = new Microservice();
-    global['microservice'] = microservice;
+    var Mycro = require('../'),
+        mycro = new Mycro();
+    global['mycro'] = mycro;
 
-    microservice.start(function(err) {
+    mycro.start(function(err) {
         expect(err).to.not.exist;
         done(err);
     });

@@ -1,10 +1,10 @@
 ## Routing (Part I)
-`restify-microservice`'s default routing hook provides a flexible and powerful routing mechanism for `restify` apps. The main routing configuration is defined in `/app/routes.js`. An extremely simple routing configuration can be seen below.
+`mycro`'s default routing hook provides a flexible and powerful routing mechanism for `restify` apps. The main routing configuration is defined in `/app/routes.js`. An extremely simple routing configuration can be seen below.
 
 
 */app/routes.js*
 ```javascript
-module.exports = function(microservice) {
+module.exports = function(mycro) {
     return {
         '/greet': {
             get: 'greet.sayHello'
@@ -68,7 +68,7 @@ and then mount it at `/admin` like so:
 
 */app/routes.js*
 ```javascript
-module.exports = function(microservice) {
+module.exports = function(mycro) {
     return {
         '/admin': 'admin' // inline definition
 
@@ -94,10 +94,10 @@ module.exports = {
     destroy: function(req, res) { /* ... */ },
     find: function(req, res) {
         var modelName = req.options.model,
-            Model = req.microservice.models[modelName];
+            Model = req.mycro.models[modelName];
         if(!Model) return res.json(400, {error: 'Invalid model specified: ' + modelName});
 
-        var criteria = req.microservice.services['crud'].parseCriteriaFromRequest(req);
+        var criteria = req.mycro.services['crud'].parseCriteriaFromRequest(req);
         Model.find(criteria, function(err, results) {
             if (err) return res.json(500, {error: err});
             res.json(200, {data: results});
@@ -128,7 +128,7 @@ Lastly, we can now mount the `CRUD` routes at various endpoints throughout our a
 
 */app/routes.js*
 ```javascript
-module.exports = function(microservice) {
+module.exports = function(mycro) {
     return {
         '/admin': 'admin',
         '/blog': {

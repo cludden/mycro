@@ -1,5 +1,5 @@
 {
-  "name": "restify-microservice",
+  "name": "mycro",
   "version": "0.1.1",
   "description": "a restify.js based microservice library, inspired by sails.js",
   "main": "index.js",
@@ -7,15 +7,16 @@
     "test": "mocha test/index.test.js test/basic/* test/hooks/* --recursive"
   },
   "keywords": [
-    "restify-microservice",
+    "mycro",
     "microservice",
-    "restify"
+    "restify",
+    "mycro"
   ],
   "author": "chris ludden",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/cludden/restify-microservice.git"
+    "url": "https://github.com/cludden/mycro.git"
   },
   "dependencies": {
     "async": "^1.4.2",

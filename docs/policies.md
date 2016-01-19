@@ -30,14 +30,14 @@ module.exports = function(req, res, next) {
 };
 ```
 
-In addition, because the `microservice` instance can be passed as an argument to the route configuration, policies can be defined as factory functions that return standard policies, which allows you to configure and combine policies in numerous ways.  
+In addition, because the `mycro` instance can be passed as an argument to the route configuration, policies can be defined as factory functions that return standard policies, which allows you to configure and combine policies in numerous ways.  
 
 In the example below we define an `or` policy, which accepts 1 or more policies as arguments, and passes if at least one policy calls `next()` with no error.
 
 
 */app/policies/or.js*
 ```javascript
-var asyncjs = require('async'),
+var async = require('async'),
     _ = require('lodash');
 
 module.exports = function() {
@@ -54,8 +54,8 @@ module.exports = function() {
             }
         };
 
-        asyncjs.some(policies, function(policy, fn) {
-            if (_.isString(policy)) policy = req.microservice.policies[policy];
+        async.some(policies, function(policy, fn) {
+            if (_.isString(policy)) policy = req.mycro.policies[policy];
             if (!policy || !_.isFunction(policy)) return fn(false);
             policy(req, fakeRes, function(err) {
                 fn(_.isEmpty(err));

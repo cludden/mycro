@@ -1,9 +1,9 @@
 'use strict';
 
-module.exports = function(microservice) {
+module.exports = function(mycro) {
     return {
         notify: function(err) {
-            microservice.log('error', err);
+            mycro.log('error', err);
         }
     };
 };

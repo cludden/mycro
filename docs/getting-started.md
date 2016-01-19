@@ -4,20 +4,20 @@ Check out the test-apps in the `/test` folder for some examples, or read the doc
 
 */index.js*
 ```javascript
-var Microservice = require('restify-microservice'),
-    microservice = new Microservice();
+var Mycro = require('mycro'),
+    mycro = new Mycro();
 
-microservice.start(function(err) {
+mycro.start(function(err) {
     if (err) {
-        return microservice.log('error', err);
+        return mycro.log('error', err);
     }
-    microservice.log('info', 'microservice started successfully');
+    mycro.log('info', 'mycro started successfully');
 });
 ```
 
 
 ## Project Structure
-A typical `restify-microservice` project structure:
+A typical `mycro` project structure:
 - **/my-project**
     - **/app**
       - **/controllers**

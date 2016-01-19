@@ -3,8 +3,8 @@
 var _ = require('lodash');
 
 module.exports = {
-    findConnection: function(microservice, modelName) {
-        return _.find(microservice.connections, function(config) {
+    findConnection: function(mycro, modelName) {
+        return _.find(mycro.connections, function(config) {
             if (!config.models.length) {
                 return false;
             }

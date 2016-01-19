@@ -20,7 +20,7 @@ module.exports = function(req, res, next) {
         },
 
         groups: ['validate', function findUserGroups(fn) {
-            req.microservice.services['data'].find('groups', {users: [1]}, function(err, groups) {
+            req.mycro.services['data'].find('groups', {users: [1]}, function(err, groups) {
                 if (err) {
                     res.json(500, {error: err});
                     return fn(true);
@@ -34,7 +34,7 @@ module.exports = function(req, res, next) {
         }],
 
         authorize: ['groups', function authorizeClearPath(fn, r) {
-            req.microservice.services['permissions'].find({
+            req.mycro.services['permissions'].find({
                 type: 'cache',
                 resource: 'cache',
                 data: {
@@ -43,7 +43,7 @@ module.exports = function(req, res, next) {
                 }
             }, function(err, permissions) {
                 if (err) {
-                    req.microservice.log('error', err);
+                    req.mycro.log('error', err);
                     return fn(err);
                 }
                 if (!permissions || !permissions.length) {

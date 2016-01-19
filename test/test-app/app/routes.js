@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function(microservice) {
+module.exports = function(mycro) {
     return {
         // define version for all paths
         'v1.0.0': {
@@ -25,7 +25,7 @@ module.exports = function(microservice) {
                     // define additional policies to add to the policy chain for path and sub-paths
                     additionalPolicies: [
                         // policies can also be factory functions
-                        microservice.policies['able-to']('manage', 'groups')
+                        mycro.policies['able-to']('manage', 'groups')
                     ],
                     // mount `rest` routes at this sub-path (/app/routes/rest.js)
                     routes: 'rest'
@@ -47,7 +47,7 @@ module.exports = function(microservice) {
                         model: 'permissions'
                     },
                     additionalPolicies: [
-                        microservice.policies['member-of']('admins')
+                        mycro.policies['member-of']('admins')
                     ],
                     // routes can be reused, while also changing the policy chain and request options
                     routes: 'rest'
@@ -95,31 +95,31 @@ module.exports = function(microservice) {
                         del: {
                             // define additional policies to add to the policy chain for this route
                             additionalPolicies: [
-                                microservice.policies['member-of']('admins')
+                                mycro.policies['member-of']('admins')
                             ],
                             handler: 'rest.remove'
                         },
                         get: {
                             additionalPolicies: [
-                                microservice.policies['or'](
-                                    microservice.policies['is-equal']('user.id', 'params.id'),
-                                    microservice.policies['able-to']('manage', 'users')
+                                mycro.policies['or'](
+                                    mycro.policies['is-equal']('user.id', 'params.id'),
+                                    mycro.policies['able-to']('manage', 'users')
                                 )
                             ],
                             handler: 'rest.detail'
                         },
                         put: {
                             additionalPolicies: [
-                                microservice.policies['or'](
-                                    microservice.policies['is-equal']('user.id', 'params.id'),
-                                    microservice.policies['able-to']('manage', 'users')
+                                mycro.policies['or'](
+                                    mycro.policies['is-equal']('user.id', 'params.id'),
+                                    mycro.policies['able-to']('manage', 'users')
                                 ),
-                                microservice.policies['if'](
-                                    microservice.policies['not'](
-                                        microservice.policies['able-to']('manage', 'users')
+                                mycro.policies['if'](
+                                    mycro.policies['not'](
+                                        mycro.policies['able-to']('manage', 'users')
                                     ),
-                                    microservice.policies['blacklist']('id', 'email', 'last', 'mobile'),
-                                    microservice.policies['blacklist']('id')
+                                    mycro.policies['blacklist']('id', 'email', 'last', 'mobile'),
+                                    mycro.policies['blacklist']('id')
                                 )
                             ],
                             handler: 'rest.update'

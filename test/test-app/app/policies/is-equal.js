@@ -8,11 +8,11 @@ module.exports = function(pathA, pathB) {
             b = _.get(req, pathB);
         if (a !== b && a.toString() !== b.toString()) {
             var e = a + ' does not equal ' + b;
-            req.microservice.log('silly', '[policy] is-equal failed:', e);
+            req.mycro.log('silly', '[policy] is-equal failed:', e);
             res.json(403, {error: e});
             return next(e);
         }
-        req.microservice.log('silly', '[policy] is-equal passed:', a, b);
+        req.mycro.log('silly', '[policy] is-equal passed:', a, b);
         next();
     };
 };

@@ -6,13 +6,13 @@ var chai = require('chai'),
 
 describe('[hook] server', function() {
 
-    it('should attach the restify library at `microservice._restify`', function() {
-        expect(microservice._restify).to.exist;
+    it('should attach the restify library at `mycro._restify`', function() {
+        expect(mycro._restify).to.exist;
     });
 
 
-    it('should create a restify server and make it available at `microservice.server`', function() {
-        expect(microservice.server).to.be.instanceOf(require('restify/lib/server'));
+    it('should create a restify server and make it available at `mycro.server`', function() {
+        expect(mycro.server).to.be.instanceOf(require('restify/lib/server'));
     });
 
 
@@ -20,7 +20,7 @@ describe('[hook] server', function() {
         var request;
 
         before(function() {
-            request = require('supertest').agent(microservice.server);
+            request = require('supertest').agent(mycro.server);
         });
 
         it('should load acceptParser', function(done) {
@@ -85,8 +85,8 @@ describe('[hook] server', function() {
             var originalDir = process.cwd();
             process.chdir(__dirname + '/../test-app-2');
 
-            var Microservice = require('../../index'),
-                m = new Microservice({
+            var Mycro = require('../../index'),
+                m = new Mycro({
                     server: {
                         port: 'abc',
                         middleware: [
@@ -112,8 +112,8 @@ describe('[hook] server', function() {
             var originalDir = process.cwd();
             process.chdir(__dirname + '/../test-app-2');
 
-            var Microservice = require('../../index'),
-                m = new Microservice({
+            var Mycro = require('../../index'),
+                m = new Mycro({
                     server: {
                         port: 'abc',
                         middleware: [

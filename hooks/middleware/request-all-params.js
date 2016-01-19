@@ -4,10 +4,10 @@ var _ = require('lodash'),
     defaultsDeep = require('merge-defaults');
 
 /**
- * Configure the base request object. Make the microservice object
+ * Configure the base request object. Make the mycro object
  * available on the request. Configure defaults for req.options
  *
- * @param  {Object} microservice
+ * @param  {Object} mycro
  */
 module.exports = function() {
     return function request(req, res, next) {

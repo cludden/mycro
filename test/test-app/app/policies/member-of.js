@@ -7,7 +7,7 @@ module.exports = function(group) {
             res.json(401, {error: e});
             return next(e);
         }
-        req.microservice.services['data'].find('groups', {name: group}, function(err, _group) {
+        req.mycro.services['data'].find('groups', {name: group}, function(err, _group) {
             if (err) {
                 res.json(500, {error: err});
                 return next(err);

@@ -6,7 +6,7 @@ module.exports = function(req, res, next) {
         res.json(401, {error: e});
         return next(e);
     }
-    req.microservice.services['data'].detail('users', parseInt(req.headers['x-user-id']), function(err, user) {
+    req.mycro.services['data'].detail('users', parseInt(req.headers['x-user-id']), function(err, user) {
         if (err) {
             res.json(500, {error: err});
             return next(err);

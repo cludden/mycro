@@ -3,7 +3,7 @@
 module.exports = {
     create: function(req, res) {
         var model = req.options.model;
-        req.microservice.services['data'].create(model, req.body, function(err, record) {
+        req.mycro.services['data'].create(model, req.body, function(err, record) {
             if (err) {
                 return res.json(500, {error: err});
             }
@@ -13,7 +13,7 @@ module.exports = {
 
     detail: function(req, res, next) {
         var model = req.options.model;
-        req.microservice.services['data'].detail(model, parseInt(req.params.id), function(err, record) {
+        req.mycro.services['data'].detail(model, parseInt(req.params.id), function(err, record) {
             if (err) {
                 res.json(500, {error: err});
                 return next(err);
@@ -24,9 +24,9 @@ module.exports = {
     },
 
     find: function(req, res) {
-        req.microservice.log('silly', 'rest.find called for model:', req.options.model, 'with query:', JSON.stringify(req.query));
+        req.mycro.log('silly', 'rest.find called for model:', req.options.model, 'with query:', JSON.stringify(req.query));
         var model = req.options.model;
-        req.microservice.services['data'].find(model, req.query, function(err, records) {
+        req.mycro.services['data'].find(model, req.query, function(err, records) {
             if (err) {
                 return res.json(500, {error: err});
             }
@@ -36,7 +36,7 @@ module.exports = {
 
     remove: function(req, res) {
         var model = req.options.model;
-        req.microservice.services['data'].remove(model, req.params.id, function(err, removed) {
+        req.mycro.services['data'].remove(model, req.params.id, function(err, removed) {
             if (err) {
                 return res.json(500, {error: err});
             }
@@ -46,7 +46,7 @@ module.exports = {
 
     update: function(req, res) {
         var model = req.options.model;
-        req.microservice.services['data'].update(model, req.params.id, req.body, function(err, updated) {
+        req.mycro.services['data'].update(model, req.params.id, req.body, function(err, updated) {
             if (err) {
                 return res.json(500, {error: err});
             }

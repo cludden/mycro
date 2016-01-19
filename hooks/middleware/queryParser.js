@@ -1,5 +1,5 @@
 'use strict';
 
-module.exports = function queryParser(microservice) {
-    return microservice._restify.queryParser();
+module.exports = function queryParser(mycro) {
+    return mycro._restify.queryParser();
 };

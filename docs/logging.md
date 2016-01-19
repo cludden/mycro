@@ -1,5 +1,5 @@
 ## Logging
-`restify-microservice` comes bundled with a [winston](https://github.com/winstonjs/winston) logger. You can override this by defining your own logger in `/config/logger.js`, which must export a function that returns a constructor for your custom logger. The default logger configuration is shown below.
+`mycro` comes bundled with a [winston](https://github.com/winstonjs/winston) logger. You can override this by defining your own logger in `/config/logger.js`, which must export a function that returns a constructor for your custom logger. The default logger configuration is shown below.
 ```javascript
 var winston = require('winston');
 

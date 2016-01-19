@@ -13,21 +13,21 @@ module.exports = {
 };
 ```
 
-Controllers can also be grouped in sub-folders within the `/app/controllers` folders, and are able to access models and services by referencing the appropriate containers on the microservice instance, which is available in all controller methods via the *Request* object (`req.microservice`)
+Controllers can also be grouped in sub-folders within the `/app/controllers` folders, and are able to access models and services by referencing the appropriate containers on the `mycro` instance, which is available in all controller methods via the *Request* object (`req.mycro`)
 
 
 */app/controllers/blog/posts.js*
 ```javascript
 module.exports = {
     create: function(req, res) {
-        var microservice = req.microservice;
+        var mycro = req.mycro;
         async.auto({
             post: function createPost(next) {
-                microservice.models['blog/posts'].create(req.body, next);
+                mycro.models['blog/posts'].create(req.body, next);
             },
 
             notify: ['post', function notifyAuthor(next, results) {
-                microservice.services['email'].sendEmail({
+                mycro.services['email'].sendEmail({
                     to: results.post.author.email
                 }, next);
             }]

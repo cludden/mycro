@@ -1,9 +1,9 @@
 'use strict';
 
-module.exports = function(microservice) {
+module.exports = function(mycro) {
     return {
         additionalPolicies: [
-            microservice.policies['member-of']('admins')
+            mycro.policies['member-of']('admins')
         ],
         '/cache': {
             '/clear': {

@@ -1,12 +1,12 @@
 'use strict';
 
-var Microservice = require('../../index.js'),
-    m = new Microservice();
+var Mycro = require('../../index.js'),
+    m = new Mycro();
 
 m.start(function(err) {
     if (err) {
         m.log('error', err);
     } else {
-        m.log('info', 'microservice started successfully');
+        m.log('info', 'mycro started successfully');
     }
 });
