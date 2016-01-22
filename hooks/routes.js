@@ -3,19 +3,19 @@
 var include = require('include-all'),
     _ = require('lodash');
 
-module.exports = function restify_microservice_nested_routes(cb) {
+module.exports = function restify_mycro_nested_routes(cb) {
     return module.exports.hook.call(this, cb);
 };
 
 module.exports.hook = function(cb) {
-    var microservice = this;
+    var mycro = this;
 
     var definition;
     try {
         definition = require(process.cwd() + '/app/routes');
-        if (_.isFunction(definition)) definition = definition(microservice);
+        if (_.isFunction(definition)) definition = definition(mycro);
     } catch (err) {
-        microservice.log('info', '[Routes] no routes found');
+        mycro.log('info', '[Routes] no routes found');
         return cb(err);
     }
 
@@ -28,10 +28,10 @@ module.exports.hook = function(cb) {
         optional:  true
     });
 
-    var defaultVersion = microservice._config.server.version || '1.0.0';
+    var defaultVersion = mycro._config.server.version || '1.0.0';
 
     var lib = require('./routes/index');
-    lib.handleDefinition(microservice, {
+    lib.handleDefinition(mycro, {
         currentPath: '',
         definition: definition,
         regexPathDefinition: '',

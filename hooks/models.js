@@ -6,8 +6,8 @@ var asyncjs = require('async'),
     _ = require('lodash');
 
 module.exports = function Models(cb) {
-    var microservice = this;
-    microservice.models = {};
+    var mycro = this;
+    mycro.models = {};
 
     var modelDefinitions = include({
         dirname: process.cwd() + '/app/models',
@@ -22,7 +22,7 @@ module.exports = function Models(cb) {
         return cb();
     }
 
-    var defaultConnection = _.find(microservice.connections, function(config) {
+    var defaultConnection = _.find(mycro.connections, function(config) {
         return config.default === true;
     });
 
@@ -35,9 +35,9 @@ module.exports = function Models(cb) {
                 modelDefinition.__name = name;
 
                 // get connection info
-                var connectionInfo = lib.findConnection(microservice, name);
+                var connectionInfo = lib.findConnection(mycro, name);
                 if (!connectionInfo) {
-                    microservice.log('silly', '[models] Unable to find explicit adapter for model (' + name + ')');
+                    mycro.log('silly', '[models] Unable to find explicit adapter for model (' + name + ')');
                     if (!defaultConnection ) {
                         return _fn('Unable to find adapter for model (' + name + ')');
                     } else {
@@ -47,28 +47,33 @@ module.exports = function Models(cb) {
 
                 // validate handler exists
                 var adapter = connectionInfo.adapter;
-                if (!adapter.registerModel || !_.isFunction(adapter.registerModel) || adapter.registerModel.length !== 3) {
+                if (!adapter.registerModel || !_.isFunction(adapter.registerModel) || adapter.registerModel.length < 3) {
                     return _fn('Invalid adapter api: adapters should define a `registerModel` method that accepts a connection object, model definition object, and a callback');
                 }
 
                 // hand off to adapter
-                adapter.registerModel(connectionInfo.connection, modelDefinition, function(err, model) {
+                var registerModelCallback = function(err, model) {
                     if (err) {
                         return _fn(err);
                     }
                     if (!model) {
                         return _fn('No model (' + name + ') returned from `adapter.registerModel`');
                     }
-                    microservice.models[name] = model;
+                    mycro.models[name] = model;
                     _fn();
-                });
+                };
+                if (adapter.registerModel.length === 3) {
+                    return adapter.registerModel(connectionInfo.connection, modelDefinition, registerModelCallback);
+                } else {
+                    return adapter.registerModel(connectionInfo.connection, modelDefinition, name, registerModelCallback);
+                }
             }, fn);
         },
 
         // once all models have been built, allow each adapter the opportunity to
         // do additional processing
         process: ['build', function(fn) {
-            var adapters = _.values(microservice.connections).map(function(connectionInfo) {
+            var adapters = _.values(mycro.connections).map(function(connectionInfo) {
                 return connectionInfo.adapter;
             });
 
@@ -76,7 +81,7 @@ module.exports = function Models(cb) {
                 if (!adapter || !_.isFunction(adapter.processModels)) {
                     return _fn();
                 }
-                adapter.processModels(microservice.models, modelDefinitions, _fn);
+                adapter.processModels(mycro.models, modelDefinitions, _fn);
             }, fn);
         }]
     }, cb);

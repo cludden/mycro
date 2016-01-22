@@ -12,14 +12,14 @@ module.exports = function(ability, resource) {
         }
         asyncjs.auto({
             groups: function findGroupsUserIsMemberOf(fn) {
-                req.microservice.services['data'].find('groups', {users: [req.user.id]}, function(err, groups) {
+                req.mycro.services['data'].find('groups', {users: [req.user.id]}, function(err, groups) {
                     if (err) return fn(err);
                     fn(null, groups || []);
                 });
             },
 
             permission: function findMatchingPermission(fn) {
-                req.microservice.services['data'].find('permissions', {
+                req.mycro.services['data'].find('permissions', {
                     type: 'ability',
                     resource: resource,
                     data: {
@@ -41,7 +41,7 @@ module.exports = function(ability, resource) {
             }]
         }, function(err) {
             if (err) {
-                req.microservice.log('silly', '[policy] able-to (' + ability + ', ' + resource + ') failed:', err);
+                req.mycro.log('silly', '[policy] able-to (' + ability + ', ' + resource + ') failed:', err);
                 res.json(403, {error: err});
                 return next(err);
             }

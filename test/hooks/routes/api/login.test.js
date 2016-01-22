@@ -8,7 +8,7 @@ describe('POST /api/login', function() {
     var request;
 
     before(function() {
-        request = supertest.agent(microservice.server);
+        request = supertest.agent(mycro.server);
     });
 
 
@@ -20,12 +20,12 @@ describe('POST /api/login', function() {
 
 
     it('should contain options from up the chain', function(done) {
-        sinon.spy(microservice, 'log');
+        sinon.spy(mycro, 'log');
         request.post('/api/login')
             .expect(200)
             .end(function(err) {
-                expect(microservice.log.lastCall.args[2]).to.eql({desc: 'welcome to the api v1.0.0'});
-                microservice.log.restore();
+                expect(mycro.log.lastCall.args[2]).to.eql({desc: 'welcome to the api v1.0.0'});
+                mycro.log.restore();
                 done(err);
             });
     });

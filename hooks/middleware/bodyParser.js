@@ -1,5 +1,5 @@
 'use strict';
 
-module.exports = function bodyParser(microservice) {
-    return microservice._restify.bodyParser();
+module.exports = function bodyParser(mycro) {
+    return mycro._restify.bodyParser();
 };

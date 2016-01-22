@@ -2,14 +2,14 @@
 
 var numeral = require('numeral');
 
-module.exports = function(microservice) {
+module.exports = function(mycro) {
     return {
         format: function(number, format, cb) {
             try {
                 var formatted = numeral(number).format(format);
                 return cb(null, formatted);
             } catch (e) {
-                microservice.services['error'].notify(e);
+                mycro.services['error'].notify(e);
                 cb(e);
             }
         }

@@ -7,7 +7,7 @@ describe('GET /api/admin/cache/clear', function() {
     var request;
 
     before(function() {
-        request = supertest.agent(microservice.server);
+        request = supertest.agent(mycro.server);
     });
 
 

@@ -6,13 +6,13 @@ var expect = require('chai').expect,
 
 describe('[hook] connections', function() {
     it('should not return an error if no connections are defined', function(done) {
-        var Microservice = require('../../index'),
-            _microservice = new Microservice({
+        var Mycro = require('../../index'),
+            _mycro = new Mycro({
                 connections: {},
                 hooks: ['connections']
             });
 
-        _microservice.start(function(err) {
+        _mycro.start(function(err) {
             expect(err).to.not.exist;
             done();
         });
@@ -20,8 +20,8 @@ describe('[hook] connections', function() {
 
 
     it('should return an error if no adapter is specified', function(done) {
-        var Microservice = require('../../index'),
-            _microservice = new Microservice({
+        var Mycro = require('../../index'),
+            _mycro = new Mycro({
                 connections: {
                     test: {
                         config: {}
@@ -30,7 +30,7 @@ describe('[hook] connections', function() {
                 hooks: ['connections']
             });
 
-        _microservice.start(function(err) {
+        _mycro.start(function(err) {
             expect(err).to.exist;
             done();
         });
@@ -38,8 +38,8 @@ describe('[hook] connections', function() {
 
 
     it('should return an error if the adapter does not define a `registerConnection` method', function(done) {
-        var Microservice = require('../../index'),
-            _microservice = new Microservice({
+        var Mycro = require('../../index'),
+            _mycro = new Mycro({
                 connections: {
                     test: {
                         adapter: {},
@@ -49,7 +49,7 @@ describe('[hook] connections', function() {
                 hooks: ['connections']
             });
 
-        _microservice.start(function(err) {
+        _mycro.start(function(err) {
             expect(err).to.exist;
             done();
         });
@@ -57,8 +57,8 @@ describe('[hook] connections', function() {
 
 
     it('should return an error if the adapter\'s `registerConnection` method does not expect two arguments', function(done) {
-        var Microservice = require('../../index'),
-            _microservice = new Microservice({
+        var Mycro = require('../../index'),
+            _mycro = new Mycro({
                 connections: {
                     test: {
                         adapter: {
@@ -70,7 +70,7 @@ describe('[hook] connections', function() {
                 hooks: ['connections']
             });
 
-        _microservice.start(function(err) {
+        _mycro.start(function(err) {
             expect(err).to.exist;
             done();
         });
@@ -88,8 +88,8 @@ describe('[hook] connections', function() {
         };
         sinon.stub(adapter, 'registerConnection').yieldsAsync(new Error('Something Unexpected'));
 
-        var Microservice = require('../../index'),
-            _microservice = new Microservice({
+        var Mycro = require('../../index'),
+            _mycro = new Mycro({
                 connections: {
                     test: {
                         adapter: adapter,
@@ -99,7 +99,7 @@ describe('[hook] connections', function() {
                 hooks: ['connections']
             });
 
-        _microservice.start(function(err) {
+        _mycro.start(function(err) {
             expect(err).to.exist;
             adapter.registerConnection.restore();
             done();
@@ -113,8 +113,8 @@ describe('[hook] connections', function() {
         };
         sinon.stub(adapter, 'registerConnection').yieldsAsync();
 
-        var Microservice = require('../../index'),
-            _microservice = new Microservice({
+        var Mycro = require('../../index'),
+            _mycro = new Mycro({
                 connections: {
                     test: {
                         adapter: adapter,
@@ -124,7 +124,7 @@ describe('[hook] connections', function() {
                 hooks: ['connections']
             });
 
-        _microservice.start(function(err) {
+        _mycro.start(function(err) {
             expect(err).to.exist;
             adapter.registerConnection.restore();
             done();

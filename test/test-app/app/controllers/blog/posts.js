@@ -2,6 +2,6 @@
 
 module.exports = {
     create: function(req, res) {
-        req.microservice.controllers['rest'].create(req, res);
+        req.mycro.controllers['rest'].create(req, res);
     }
 };

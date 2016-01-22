@@ -4,9 +4,9 @@
 var expect = require('chai').expect,
     sinon = require('sinon');
 
-describe('restify-microservice', function() {
-    it('should allow config files to access the microservice object', function() {
-        expect(microservice._config.test.something).to.equal('something else');
+describe('mycro', function() {
+    it('should allow config files to access the mycro object', function() {
+        expect(mycro._config.test.something).to.equal('something else');
     });
 
 
@@ -15,8 +15,8 @@ describe('restify-microservice', function() {
         process.chdir(__dirname + '/../test-app-2');
 
         sinon.spy(require('../../hooks/routes'), 'hook');
-        var Microservice = require('../../index'),
-            m = new Microservice({
+        var Mycro = require('../../index'),
+            m = new Mycro({
                 hooks: [
                     'restify-microservice-mongoose-rest'
                 ]
@@ -35,8 +35,8 @@ describe('restify-microservice', function() {
         var originalDir = process.cwd();
         process.chdir(__dirname + '/../test-app-2');
 
-        var Microservice = require('../../index'),
-            m = new Microservice({
+        var Mycro = require('../../index'),
+            m = new Mycro({
                 hooks: [
                     'something-totally-made-up'
                 ]
@@ -55,8 +55,8 @@ describe('restify-microservice', function() {
         process.chdir(__dirname + '/../test-app-2');
 
         sinon.stub(require('../../hooks/routes'), 'hook').yieldsAsync('Something unexpected');
-        var Microservice = require('../../index'),
-            m = new Microservice({
+        var Mycro = require('../../index'),
+            m = new Mycro({
                 hooks: [
                     'server',
                     'routes'
@@ -77,8 +77,8 @@ describe('restify-microservice', function() {
         var originalDir = process.cwd();
         process.chdir(__dirname + '/../test-app-2');
 
-        var Microservice = require('../../index'),
-            m = new Microservice({
+        var Mycro = require('../../index'),
+            m = new Mycro({
                 hooks: [
                     'server',
                     'routes',
@@ -95,12 +95,12 @@ describe('restify-microservice', function() {
     });
 
 
-    it('should only start the server when a numeric port is provided and a `microservice.server.listen` method is defined', function(done) {
+    it('should only start the server when a numeric port is provided and a `mycro.server.listen` method is defined', function(done) {
         var originalDir = process.cwd();
         process.chdir(__dirname + '/../test-app-2');
 
-        var Microservice = require('../../index'),
-            m = new Microservice({
+        var Mycro = require('../../index'),
+            m = new Mycro({
                 server: {
                     port: 'abc'
                 },

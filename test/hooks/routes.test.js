@@ -3,7 +3,7 @@
 
 var asyncjs = require('async'),
     expect = require('chai').expect,
-    Microservice = require('../../index'),
+    Mycro = require('../../index'),
     sinon = require('sinon'),
     supertest = require('supertest');
 
@@ -11,7 +11,7 @@ describe('[hook] routes', function() {
     var request;
 
     before(function() {
-        request = supertest.agent(microservice.server);
+        request = supertest.agent(mycro.server);
     });
 
 
@@ -19,9 +19,9 @@ describe('[hook] routes', function() {
         var cwd = process.cwd();
         process.chdir(__dirname + '/routes/test-app-no-problems');
 
-        var _microservice = new Microservice({});
+        var _mycro = new Mycro({});
 
-        _microservice.start(function(err) {
+        _mycro.start(function(err) {
             process.chdir(cwd);
             expect(err).to.not.exist;
             done();
@@ -33,9 +33,9 @@ describe('[hook] routes', function() {
         var cwd = process.cwd();
         process.chdir(__dirname + '/routes/test-app-no-routes');
 
-        var _microservice = new Microservice({});
+        var _mycro = new Mycro({});
 
-        _microservice.start(function(err) {
+        _mycro.start(function(err) {
             process.chdir(cwd);
             expect(err).to.exist;
             done();
@@ -365,25 +365,25 @@ describe('[hook] routes', function() {
     it('should allow included routes to be reused', function(done) {
         asyncjs.series([
             function(fn) {
-                sinon.spy(microservice.services['data'], 'find');
+                sinon.spy(mycro.services['data'], 'find');
                 request.get('/api/groups')
                     .set('x-user-id', 1)
                     .expect(200)
                     .end(function(err) {
-                        expect(microservice.services['data'].find).to.have.been.called;
-                        microservice.services['data'].find.restore();
+                        expect(mycro.services['data'].find).to.have.been.called;
+                        mycro.services['data'].find.restore();
                         fn(err);
                     });
             },
 
             function(fn) {
-                sinon.spy(microservice.services['data'], 'find');
+                sinon.spy(mycro.services['data'], 'find');
                 request.get('/api/users')
                     .set('x-user-id', 1)
                     .expect(200)
                     .end(function(err) {
-                        expect(microservice.services['data'].find).to.have.been.called;
-                        microservice.services['data'].find.restore();
+                        expect(mycro.services['data'].find).to.have.been.called;
+                        mycro.services['data'].find.restore();
                         fn(err);
                     });
             }
@@ -396,8 +396,8 @@ describe('[hook] routes', function() {
             var cwd = process.cwd();
             process.chdir(__dirname + '/routes/test-app-invalid-definition');
 
-            var _microservice = new Microservice();
-            _microservice.start(function(err) {
+            var _mycro = new Mycro();
+            _mycro.start(function(err) {
                 process.chdir(cwd);
                 expect(err).to.exist;
                 done();
@@ -409,11 +409,11 @@ describe('[hook] routes', function() {
             var cwd = process.cwd();
             process.chdir(__dirname + '/routes/test-app-invalid-handler-type');
 
-            var _microservice = new Microservice({
+            var _mycro = new Mycro({
                 hooks: ['server', 'routes']
             });
 
-            _microservice.start(function(err) {
+            _mycro.start(function(err) {
                 process.chdir(cwd);
                 expect(err).to.exist;
                 done();
@@ -425,11 +425,11 @@ describe('[hook] routes', function() {
             var cwd = process.cwd();
             process.chdir(__dirname + '/routes/test-app-no-handler');
 
-            var _microservice = new Microservice({
+            var _mycro = new Mycro({
                 hooks: ['server', 'routes']
             });
 
-            _microservice.start(function(err) {
+            _mycro.start(function(err) {
                 process.chdir(cwd);
                 expect(err).to.exist;
                 done();
@@ -441,14 +441,14 @@ describe('[hook] routes', function() {
             var cwd = process.cwd();
             process.chdir(__dirname + '/routes/test-app-nested-invalid-handler');
 
-            var _microservice = new Microservice({
+            var _mycro = new Mycro({
                 server: {
                     port: 8081
                 },
                 hooks: ['server', 'routes']
             });
 
-            _microservice.start(function(err) {
+            _mycro.start(function(err) {
                 process.chdir(cwd);
                 expect(err).to.exist;
                 done();
@@ -460,14 +460,14 @@ describe('[hook] routes', function() {
             var cwd = process.cwd();
             process.chdir(__dirname + '/routes/test-app-missing-policy');
 
-            var _microservice = new Microservice({
+            var _mycro = new Mycro({
                 server: {
                     port: 8081
                 },
                 hooks: ['server', 'policies', 'routes']
             });
 
-            _microservice.start(function(err) {
+            _mycro.start(function(err) {
                 process.chdir(cwd);
                 expect(err).to.exist;
                 done();
@@ -479,23 +479,23 @@ describe('[hook] routes', function() {
             var cwd = process.cwd();
             process.chdir(__dirname + '/routes/test-app-no-problems');
 
-            var _microservice = new Microservice({
+            var _mycro = new Mycro({
                 server: {
                     port: 8081
                 },
                 hooks: [
                     'server',
                     function(cb) {
-                        sinon.stub(_microservice.server, 'get').throws();
+                        sinon.stub(_mycro.server, 'get').throws();
                         cb();
                     },
                     'routes'
                 ]
             });
 
-            _microservice.start(function(err) {
+            _mycro.start(function(err) {
                 process.chdir(cwd);
-                _microservice.server.get.restore();
+                _mycro.server.get.restore();
                 expect(err).to.exist;
                 done();
             });
@@ -506,14 +506,14 @@ describe('[hook] routes', function() {
             var cwd = process.cwd();
             process.chdir(__dirname + '/routes/test-app-invalid-string-handler');
 
-            var _microservice = new Microservice({
+            var _mycro = new Mycro({
                 server: {
                     port: 8081
                 },
                 hooks: ['server', 'controllers', 'routes']
             });
 
-            _microservice.start(function(err) {
+            _mycro.start(function(err) {
                 process.chdir(cwd);
                 expect(err).to.exist;
                 done();
@@ -525,14 +525,14 @@ describe('[hook] routes', function() {
             var cwd = process.cwd();
             process.chdir(__dirname + '/routes/test-app-missing-controller');
 
-            var _microservice = new Microservice({
+            var _mycro = new Mycro({
                 server: {
                     port: 8081
                 },
                 hooks: ['server', 'controllers', 'routes']
             });
 
-            _microservice.start(function(err) {
+            _mycro.start(function(err) {
                 process.chdir(cwd);
                 expect(err).to.exist;
                 done();
@@ -544,14 +544,14 @@ describe('[hook] routes', function() {
             var cwd = process.cwd();
             process.chdir(__dirname + '/routes/test-app-missing-action');
 
-            var _microservice = new Microservice({
+            var _mycro = new Mycro({
                 server: {
                     port: 8081
                 },
                 hooks: ['server', 'controllers', 'routes']
             });
 
-            _microservice.start(function(err) {
+            _mycro.start(function(err) {
                 process.chdir(cwd);
                 expect(err).to.exist;
                 done();
@@ -563,14 +563,14 @@ describe('[hook] routes', function() {
             var cwd = process.cwd();
             process.chdir(__dirname + '/routes/test-app-invalid-action-type');
 
-            var _microservice = new Microservice({
+            var _mycro = new Mycro({
                 server: {
                     port: 8081
                 },
                 hooks: ['server', 'controllers', 'routes']
             });
 
-            _microservice.start(function(err) {
+            _mycro.start(function(err) {
                 process.chdir(cwd);
                 expect(err).to.exist;
                 done();

@@ -7,7 +7,7 @@ describe('GET /api/admin/config', function() {
     var request;
 
     before(function() {
-        request = supertest.agent(microservice.server);
+        request = supertest.agent(mycro.server);
     });
 
     it('should allow routes to be included from included files', function(done) {

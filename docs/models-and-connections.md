@@ -8,8 +8,8 @@ Database connections can be defined in `/config/connections.js` file. Each conne
 
 */config/connections.js*
 ```javascript
-var mongooseAdapter = require('restify-microservice-mongoose'),
-    sequelizeAdapter = require('restify-microservice-sequelize');
+var mongooseAdapter = require('mycro-mongoose'),
+    sequelizeAdapter = require('mycro-sequelize');
 
 module.exports = {
     // define a name for you connection

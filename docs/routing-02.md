@@ -3,7 +3,7 @@ The default routing hook allows you to define, overwrite, and add additional pol
 
 */app/routes.js*
 ```javascript
-module.exports = function(microservice) {
+module.exports = function(mycro) {
     return {
         '/api': {
             // define the policy chain for a particular path and all of it's subpaths and routes
@@ -16,9 +16,9 @@ module.exports = function(microservice) {
                 // define additional policies for routes at /api/admin/*. These policies will be
                 // added to the current policy chain (after `authenticated` in this case)
                 additionalPolicies: [
-                    microservice.policies['or'](
+                    mycro.policies['or'](
                         'isSuperAdmin', // normal policies can be called via their file name
-                        microservice.policies['member-of']('admins') // policy factory functions can be executed inline
+                        mycro.policies['member-of']('admins') // policy factory functions can be executed inline
                     )
                 ],
                 routes: 'admin'
@@ -58,7 +58,7 @@ module.exports = {
         del: {
             policies: [
                 'authenticated',
-                microservice.policies['or'](
+                mycro.policies['or'](
                     'isSuperAdmin',
                     'owner'
                 )
@@ -82,7 +82,7 @@ In addition to policies, the api allows you to specify regex routes and version 
 
 */app/routes.js*
 ```javascript
-module.exports = function(microservice) {
+module.exports = function(mycro) {
     return {
         // unversioned routes will use the default version specified in the server config
         // or 1.0.0 if no default is specified

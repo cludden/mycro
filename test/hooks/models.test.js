@@ -2,7 +2,7 @@
 'use strict';
 
 var expect = require('chai').expect,
-    Microservice = require('../../index'),
+    Mycro = require('../../index'),
     sinon = require('sinon'),
     _ = require('lodash');
 
@@ -48,7 +48,7 @@ describe('[hook] models', function() {
         var cwd = process.cwd();
         process.chdir(__dirname + '/models/test-app-no-models');
 
-        var _microservice = new Microservice({
+        var _mycro = new Mycro({
             connections: {
                 test: {
                     adapter: adapter,
@@ -57,7 +57,7 @@ describe('[hook] models', function() {
             }
         });
 
-        _microservice.start(function(err) {
+        _mycro.start(function(err) {
             process.chdir(cwd);
             expect(err).to.not.exist;
             done();
@@ -69,7 +69,7 @@ describe('[hook] models', function() {
         var cwd = process.cwd();
         process.chdir(__dirname + '/models/test-app-missing-adapter');
 
-        var _microservice = new Microservice({
+        var _mycro = new Mycro({
             connections: {
                 one: {
                     adapter: adapter,
@@ -88,7 +88,7 @@ describe('[hook] models', function() {
             }
         });
 
-        _microservice.start(function(err) {
+        _mycro.start(function(err) {
             process.chdir(cwd);
             expect(err).to.exist;
             done();
@@ -103,7 +103,7 @@ describe('[hook] models', function() {
         var invalidAdapter = _.clone(adapter);
         delete invalidAdapter.registerModel;
 
-        var _microservice = new Microservice({
+        var _mycro = new Mycro({
             connections: {
                 one: {
                     adapter: invalidAdapter,
@@ -112,7 +112,7 @@ describe('[hook] models', function() {
             }
         });
 
-        _microservice.start(function(err) {
+        _mycro.start(function(err) {
             process.chdir(cwd);
             expect(err).to.exist;
             done();
@@ -127,7 +127,7 @@ describe('[hook] models', function() {
         var invalidAdapter = _.clone(adapter);
         invalidAdapter.registerModel = function() {};
 
-        var _microservice = new Microservice({
+        var _mycro = new Mycro({
             connections: {
                 one: {
                     adapter: invalidAdapter,
@@ -136,7 +136,7 @@ describe('[hook] models', function() {
             }
         });
 
-        _microservice.start(function(err) {
+        _mycro.start(function(err) {
             process.chdir(cwd);
             expect(err).to.exist;
             done();
@@ -150,7 +150,7 @@ describe('[hook] models', function() {
 
         sinon.stub(adapter, 'registerModel').callsArgWithAsync(2, new Error('Something unexpected'));
 
-        var _microservice = new Microservice({
+        var _mycro = new Mycro({
             connections: {
                 one: {
                     adapter: adapter,
@@ -159,7 +159,7 @@ describe('[hook] models', function() {
             }
         });
 
-        _microservice.start(function(err) {
+        _mycro.start(function(err) {
             process.chdir(cwd);
             adapter.registerModel.restore();
             expect(err).to.exist;
@@ -174,7 +174,7 @@ describe('[hook] models', function() {
 
         sinon.stub(adapter, 'registerModel').callsArgWithAsync(2);
 
-        var _microservice = new Microservice({
+        var _mycro = new Mycro({
             connections: {
                 one: {
                     adapter: adapter,
@@ -183,7 +183,7 @@ describe('[hook] models', function() {
             }
         });
 
-        _microservice.start(function(err) {
+        _mycro.start(function(err) {
             process.chdir(cwd);
             adapter.registerModel.restore();
             expect(err).to.exist;
@@ -198,7 +198,7 @@ describe('[hook] models', function() {
 
         sinon.stub(adapter, 'processModels').yieldsAsync(new Error('Something unexpected'));
 
-        var _microservice = new Microservice({
+        var _mycro = new Mycro({
             connections: {
                 one: {
                     adapter: adapter,
@@ -207,7 +207,7 @@ describe('[hook] models', function() {
             }
         });
 
-        _microservice.start(function(err) {
+        _mycro.start(function(err) {
             process.chdir(cwd);
             adapter.processModels.restore();
             expect(err).to.exist;

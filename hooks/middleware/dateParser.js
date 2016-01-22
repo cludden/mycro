@@ -1,5 +1,5 @@
 'use strict';
 
-module.exports = function dateParser(microservice) {
-    return microservice._restify.dateParser();
+module.exports = function dateParser(mycro) {
+    return mycro._restify.dateParser();
 };

@@ -1,5 +1,5 @@
-# restify-microservice
-[![Build Status](https://travis-ci.org/cludden/restify-microservice.svg?branch=master)](https://travis-ci.org/cludden/restify-microservice)
+# mycro
+[![Build Status](https://travis-ci.org/cludden/mycro.svg?branch=master)](https://travis-ci.org/cludden/mycro)
 
 
 a [restify.js](http://restify.com) based microservice library, inspired by [sails.js](http://sailsjs.org)  
@@ -7,11 +7,11 @@ a [restify.js](http://restify.com) based microservice library, inspired by [sail
 
 ## Install
 ```javascript
-npm install --save restify-microservice
+npm install --save mycro
 ```
 
 ## Purpose
-To provide a highly customizable platform for a well-organized [restify.js](http://restify.com) app, using `hooks`. By default, `restify-microservice` comes bundled with hooks for middleware, models, controllers, services, policies, routing, etc. However, this module allows you to implement custom hooks extremely easily, as well as disable, override, or reorder the default hooks. More importantly, this module makes no assumption regarding which other third party libraries (ORMs, middleware, templating engines, etc) you'd like to use in your app. In fact, using restify is entirely optional, and can be disabled by excluding the `server` hook or implementing your own
+To provide a highly customizable platform for a well-organized [restify.js](http://restify.com) or [express.js](http://expressjs.com) app, using `hooks`. By default, `mycro` comes bundled with hooks for controllers, models & connections, middleware, policies, routing, services, etc. However, this module allows you to implement custom hooks extremely easily, as well as disable, override, or reorder the default hooks. More importantly, this module makes no assumption regarding which other third party libraries (ORMs, middleware, templating engines, etc) you'd like to use in your app. In fact, using `restify` is entirely optional, and can be disabled by excluding the `server` & `start` hooks or implementing your own.
 
 
 ## Docs
@@ -30,7 +30,7 @@ To provide a highly customizable platform for a well-organized [restify.js](http
 
 
 ## Bundled Hooks
-`restify-microservice` comes bundled with the following hooks:
+`mycro` comes bundled with the following hooks:
 - connections
 - models
 - server
@@ -70,18 +70,18 @@ module.exports = [
 
 
 ## Custom Hooks
-Implementing a custom hook is as easy as requiring a file/module that exports a function that accepts a single callback. The function is bound to the `microservice` context, which allows you to manipulate any aspect of the `microservice`.
+Implementing a custom hook is as easy as requiring a file/module that exports a function that accepts a single callback. The function is bound to the `mycro` application instance, which allows you to manipulate any aspect of the `mycro` application.
 
 
 *hooks/my-hook.js*
 ```javascript
 module.exports = function(done) {
-    var microservice = this;
+    var mycro = this;
 
     // this assumes that the `services` hook was run prior to this hook and that
     // we implemented a service `app/services/dynamoDB.js` that exports a dynamoDB
     // document client
-    microservice.services['dynamoDB'].put({
+    mycro.services['dynamoDB'].put({
         TableName: 'service-logs',
         Item: {
             'service': 'my-service',
@@ -92,7 +92,7 @@ module.exports = function(done) {
         }
     }, function(err, data) {
         if (err) {
-            microservice.log('error', err);
+            mycro.log('error', err);
             return done(err);
         }
         done();
@@ -108,14 +108,14 @@ module.exports = function(done) {
 To use these hooks, simply install them via `npm install --save <insert hook name here>` and require them in your `config/hooks.js` file.
 
 
-- [restify-microservice-mongoose-rest](https://github.com/cludden/restify-microservice-mongoose-rest)
+- [mycro-mongoose-rest](https://github.com/cludden/mycro-mongoose-rest)
     - Creates restful mongoose controllers for your mongoose models using [restify-mongoose](https://github.com/saintedlama/restify-mongoose)
 
 
 **Adapters**
 
 
-- [restify-microservice-mongoose](https://github.com/cludden/restify-microservice-mongoose)
+- [mycro-mongoose](https://github.com/cludden/mycro-mongoose)
     - mongoose adapter
 
 
@@ -132,7 +132,7 @@ grunt coverage
 
 
 ## Contributing
-1. [Fork it](https://github.com/cludden/restify-microservice/fork)
+1. [Fork it](https://github.com/cludden/mycro/fork)
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)

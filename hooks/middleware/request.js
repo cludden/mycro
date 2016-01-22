@@ -1,15 +1,15 @@
 'use strict';
 
 /**
- * Configure the base request object. Make the microservice object
+ * Configure the base request object. Make the mycro object
  * available on the request. Configure defaults for req.options
  *
- * @param  {Object} microservice
+ * @param  {Object} mycro
  */
-module.exports = function(microservice) {
+module.exports = function(mycro) {
     return function request(req, res, next) {
-        // attach the microservice to each request
-        req.microservice = microservice;
+        // attach the mycro to each request
+        req.mycro = mycro;
 
         // define request attributes
         req.options = {};

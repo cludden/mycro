@@ -12,7 +12,7 @@ module.exports = {
      * @param  {Object} options
      * @param  {Function} cb
      */
-    handleDefinition: function handleDefinition(microservice, options, cb) {
+    handleDefinition: function handleDefinition(mycro, options, cb) {
         var self = this;
         asyncjs.auto({
             // validate arguments
@@ -45,7 +45,7 @@ module.exports = {
                 if (_.isString(definition)) {
                     definition = options.routes[options.definition];
                     if (_.isFunction(definition)) {
-                        definition = definition(microservice);
+                        definition = definition(mycro);
                     }
                     return fn(null, definition);
                 }
@@ -54,7 +54,7 @@ module.exports = {
                 if (definition.routes && _.isString(definition.routes)) {
                     var routesToInclude = options.routes[definition.routes];
                     if (_.isFunction(routesToInclude)) {
-                        routesToInclude = routesToInclude(microservice);
+                        routesToInclude = routesToInclude(mycro);
                     }
                     _.defaults(definition, routesToInclude);
                 }
@@ -71,7 +71,7 @@ module.exports = {
                 asyncjs.each(['del', 'get', 'head', 'post', 'put'], function(verb, _fn) {
                     if (r.definition[verb]) {
                         var routeOptions = _.cloneDeep(options);
-                        return self.handleRoute(microservice, verb, options.currentPath, r.definition[verb], routeOptions, _fn);
+                        return self.handleRoute(mycro, verb, options.currentPath, r.definition[verb], routeOptions, _fn);
                     }
                     _fn();
                 }, fn);
@@ -86,7 +86,7 @@ module.exports = {
                     var subOptions = _.cloneDeep(options);
                     subOptions.currentPath = key;
                     subOptions.definition = r.definition[key];
-                    self.handleDefinition(microservice, subOptions, _fn);
+                    self.handleDefinition(mycro, subOptions, _fn);
                 }, fn);
             }],
 
@@ -99,7 +99,7 @@ module.exports = {
                     var subOptions = _.cloneDeep(options);
                     subOptions.version = key.replace(/v/g, '');
                     subOptions.definition = r.definition[key];
-                    self.handleDefinition(microservice, subOptions, _fn);
+                    self.handleDefinition(mycro, subOptions, _fn);
                 }, fn);
             }]
         }, cb);
@@ -138,7 +138,7 @@ module.exports = {
     },
 
 
-    handleRoute: function(microservice, verb, path, handler, options, cb) {
+    handleRoute: function(mycro, verb, path, handler, options, cb) {
         var self = this;
         asyncjs.auto({
             // process handler definition
@@ -147,7 +147,7 @@ module.exports = {
                     return fn(null, handler);
                 }
                 if (_.isString(handler)) {
-                    return self.processStringHandler(microservice, handler, fn);
+                    return self.processStringHandler(mycro, handler, fn);
                 }
                 if (_.isObject(handler)) {
                     // make sure the object defines a `handler` attribute
@@ -170,7 +170,7 @@ module.exports = {
                         return fn(null, handler.handler);
                     }
                     if (_.isString(handler.handler)) {
-                        return self.processStringHandler(microservice, handler.handler, fn);
+                        return self.processStringHandler(mycro, handler.handler, fn);
                     }
                 }
                 return fn('Unsupported handler type for '+ verb.toUpperCase() + ' ' + path.toString());
@@ -202,7 +202,7 @@ module.exports = {
                         return handler;
                     }
                     if (_.isString(handler)) {
-                        var policy = microservice.policies[handler];
+                        var policy = mycro.policies[handler];
                         if (!policy || !_.isFunction(policy)) {
                             policyError = 'Unable to locate function policy for ' + handler;
                             return false;
@@ -216,9 +216,9 @@ module.exports = {
                     return fn('Invalid policy chain for route ' + verb.toUpperCase() + ' ' + path + ': ' + policyError);
                 }
 
-                microservice.log('silly', '[hook] routes :: binding route (v' + options.version + ')  ' + verb.toUpperCase() + (verb.length === 3 ? ' ' : '') + ' ' + path);
+                mycro.log('silly', '[hook] routes :: binding route (v' + options.version + ')  ' + verb.toUpperCase() + (verb.length === 3 ? ' ' : '') + ' ' + path);
                 try {
-                    microservice.server[verb].apply(microservice.server, policyChain);
+                    mycro.server[verb].apply(mycro.server, policyChain);
                     return fn();
                 } catch (e) {
                     return fn('There was an error while attempting to bind route: ' + e);
@@ -232,12 +232,12 @@ module.exports = {
         });
     },
 
-    processStringHandler: function(microservice, handler, cb) {
+    processStringHandler: function(mycro, handler, cb) {
         var pieces = handler.split('.');
         if (pieces.length !== 2) {
             return cb('Unable to process string handler. Must be in format `controllerName.actionName`');
         }
-        var controller = microservice.controllers[pieces[0]];
+        var controller = mycro.controllers[pieces[0]];
         if (!controller) {
             return cb('Unable to locate controller: ' + pieces[0]);
         }
