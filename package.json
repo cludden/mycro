@@ -9,8 +9,7 @@
   "keywords": [
     "mycro",
     "microservice",
-    "restify",
-    "mycro"
+    "restify"
   ],
   "author": "chris ludden",
   "license": "MIT",
@@ -24,6 +23,7 @@
     "joi": "^7.0.1",
     "lodash": "^3.10.1",
     "merge-defaults": "^0.2.1",
+    "morgan": "^1.6.1",
     "path-to-regexp": "^1.2.1",
     "restify": "^4.0.3",
     "winston": "^1.1.1"

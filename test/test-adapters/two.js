@@ -54,7 +54,7 @@ module.exports = {
         }, 25);
     },
 
-    registerModel: function(connection, definition, cb) {
+    registerModel: function(connection, definition, name, cb) {
         try {
             var model = definition.define(connection);
             return cb(null, model);

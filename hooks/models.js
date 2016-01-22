@@ -47,12 +47,12 @@ module.exports = function Models(cb) {
 
                 // validate handler exists
                 var adapter = connectionInfo.adapter;
-                if (!adapter.registerModel || !_.isFunction(adapter.registerModel) || adapter.registerModel.length !== 3) {
+                if (!adapter.registerModel || !_.isFunction(adapter.registerModel) || adapter.registerModel.length < 3) {
                     return _fn('Invalid adapter api: adapters should define a `registerModel` method that accepts a connection object, model definition object, and a callback');
                 }
 
                 // hand off to adapter
-                adapter.registerModel(connectionInfo.connection, modelDefinition, function(err, model) {
+                var registerModelCallback = function(err, model) {
                     if (err) {
                         return _fn(err);
                     }
@@ -61,7 +61,12 @@ module.exports = function Models(cb) {
                     }
                     mycro.models[name] = model;
                     _fn();
-                });
+                };
+                if (adapter.registerModel.length === 3) {
+                    return adapter.registerModel(connectionInfo.connection, modelDefinition, registerModelCallback);
+                } else {
+                    return adapter.registerModel(connectionInfo.connection, modelDefinition, name, registerModelCallback);
+                }
             }, fn);
         },
 
