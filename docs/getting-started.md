@@ -1,5 +1,23 @@
+[Back to home](/README.md)
 ## Getting Started
-Check out the test-apps in the `/test` folder for some examples, or read the docs.
+The easiest way to get started is to use [http://yeoman.io/] to generate a new `mycro` project.
+```javascript
+// first, make sure you have yeoman and the mycro generator installed globablly
+npm install -g yo generator-mycro
+
+// then, create a new project
+yo mycro my-new-project
+
+// lastly, switch into your new project directory and start the app or run the tests
+cd my-new-project
+npm test
+npm start
+```
+
+Also, feel free to check out the test-apps in the `/test` folder for some examples, or read the docs.
+
+
+To start a project from scratch, install mycro via `npm install --save mycro` and create an entry point.
 
 
 */index.js*
