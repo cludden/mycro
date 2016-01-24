@@ -16,7 +16,7 @@ module.exports = function(mycro) {
                 // define additional policies for routes at /api/admin/*. These policies will be
                 // added to the current policy chain (after `authenticated` in this case)
                 additionalPolicies: [
-                    mycro.policies['or'](
+                    mycro.policies.or(
                         'isSuperAdmin', // normal policies can be called via their file name
                         mycro.policies['member-of']('admins') // policy factory functions can be executed inline
                     )
@@ -58,7 +58,7 @@ module.exports = {
         del: {
             policies: [
                 'authenticated',
-                mycro.policies['or'](
+                mycro.policies.or(
                     'isSuperAdmin',
                     'owner'
                 )

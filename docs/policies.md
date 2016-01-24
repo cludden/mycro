@@ -1,4 +1,4 @@
-## Policies
+\## Policies
 Policies are simply middleware functions that are executed before the controller method. Each policy is capable of modifying the request, aborting it, or redirecting it. Policies are a perfect way of keeping authorization/access logic separate from endpoint logic.
 
 For example, you might define an `authenticated` policy that looks for an access token on the request and attempts to verify it.

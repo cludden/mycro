@@ -6,6 +6,16 @@ a [restify.js](http://restify.com) based microservice library, inspired by [sail
 
 
 ## Install
+With yeoman:
+```javascript
+// install yeoman & the mycro generator globablly
+npm install -g yo generator-mycro
+
+// create a new mycro app
+yo mycro my-app
+```
+
+The long way:
 ```javascript
 npm install --save mycro
 ```
@@ -29,29 +39,20 @@ To provide a highly customizable platform for a well-organized [restify.js](http
 - [Logging](/docs/logging.md)
 
 
+## Hooks
+At the most basic level, `mycro` is simply a serial asynchronous hook loader. By default, it comes bundled with hooks for implementing some of the most common patterns found in most `restify` apps, but you are free to include or exclude any or all of the included hooks, as well as write your own. Hooks can do anything you need them to, including but not limited to, interacting with a database, making api calls, loading third party modules, etc.
+
 ## Bundled Hooks
 `mycro` comes bundled with the following hooks:
-- connections
-- models
-- server
-- services
-- policies
-- controllers
-- routes
+- **server** - creates a restify server and loads specified middleware
+- **connections** - handles all database/ORM connection configuration
+- **models** - loads models at `mycro.models` and executes any post processing
+- **services** - loads services at `mycro.services`
+- **policies** - loads policies at `mycro.policies`
+- **controllers** - loads controllers at `mycro.controllers`
+- **routes** - defines routes based on the route config specified in `/app/routes.js`
+- **start** - starts the server
 
-
-The default hooks configuration is shown below. You can override this by providing your own configuration in `config/hooks.js`.
-```javascript
-module.exports = [
-    'connections',
-    'models',
-    'server',
-    'services',
-    'policies',
-    'controllers',
-    'routes'
-];
-```
 
 To implement your own hook configuration, define your own `config/hooks.js` file:
 
@@ -60,43 +61,29 @@ To implement your own hook configuration, define your own `config/hooks.js` file
 ```javascript
 module.exports = [
     'server',
+    'connections',
+    'models',
     'services',
+    'policies',
     require('../hooks/my-hook.js'), // custom project hook
     'controllers',
     'super-cool-hook', // installable hook
-    require('../hooks/my-own-routes-hook') // custom project hook
+    require('../hooks/my-own-routes-hook'), // custom project hook
+    'start'
 ];
 ```
 
 
 ## Custom Hooks
-Implementing a custom hook is as easy as requiring a file/module that exports a function that accepts a single callback. The function is bound to the `mycro` application instance, which allows you to manipulate any aspect of the `mycro` application.
+Implementing a custom hook is super easy. A hook exports a function. The function is bound to the `mycro` application instance, which allows you to manipulate any aspect of the `mycro` application. Lastly, the function accepts a single callback. Make sure to call it when the hook is complete!
 
 
 *hooks/my-hook.js*
 ```javascript
-module.exports = function(done) {
+module.exports = function myHook(done) {
     var mycro = this;
-
-    // this assumes that the `services` hook was run prior to this hook and that
-    // we implemented a service `app/services/dynamoDB.js` that exports a dynamoDB
-    // document client
-    mycro.services['dynamoDB'].put({
-        TableName: 'service-logs',
-        Item: {
-            'service': 'my-service',
-            'event': 'starting',
-            'info': {
-                'date': Date.now()
-            }
-        }
-    }, function(err, data) {
-        if (err) {
-            mycro.log('error', err);
-            return done(err);
-        }
-        done();
-    });
+    // do some stuff
+    done();
 };
 ```
 

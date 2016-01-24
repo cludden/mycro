@@ -5,7 +5,7 @@ var EventEmitter = require('events'),
     _ = require('lodash'),
     async = require('async');
 
-var Microservice = function(config) {
+var Mycro = function(config) {
     var self = this;
 
     // inherit from EventEmitter
@@ -100,19 +100,9 @@ var Microservice = function(config) {
                     fn();
                 });
             },
-            function(err) {
-                // handle unexpected error
-                if (err) return done(err);
-                if (!self.server || !self.server.listen || typeof self.server.listen !== 'function') return done();
-
-                // start the server
-                var port = parseInt(self._config.server.port || process.env['PORT']);
-                if (isNaN(port)) return done();
-                self.server.listen(port);
-                done();
-            }
+            done
         );
     };
 };
 
-module.exports = Microservice;
+module.exports = Mycro;
