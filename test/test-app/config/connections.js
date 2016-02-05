@@ -18,11 +18,13 @@ module.exports = {
 
     two: {
         adapter: adapterTwo,
-        config: {
-            url: 'https://localhost:2;localhost:3;localhost:4',
-            user: 'user',
-            password: 'password',
-            database: 'test'
+        config: function(mycro) {
+            return {
+                url: 'https://localhost:2;localhost:3;localhost:4',
+                user: 'user',
+                password: 'password',
+                database: 'test'
+            };
         },
         models: [
             'users',
