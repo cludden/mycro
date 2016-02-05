@@ -1,5 +1,5 @@
 # mycro
-[![Build Status](https://travis-ci.org/cludden/mycro.svg?branch=master)](https://travis-ci.org/cludden/mycro)
+[![Build Status](https://travis-ci.org/cludden/mycro.svg?branch=master)](https://travis-ci.org/cludden/mycro) [![Codacy Badge](https://api.codacy.com/project/badge/grade/5b759953fe0248b1a241bc8700f64e61)](https://www.codacy.com/app/chris-ludden/mycro)
 
 
 a [restify.js](http://restify.com) based microservice library, inspired by [sails.js](http://sailsjs.org)  
@@ -97,6 +97,8 @@ To use these hooks, simply install them via `npm install --save <insert hook nam
 
 - [mycro-mongoose-rest](https://github.com/cludden/mycro-mongoose-rest)
     - Creates RESTful mongoose controllers for your mongoose models using [restify-mongoose](https://github.com/saintedlama/restify-mongoose)
+- [mycro-secrets](https://github.com/cludden/mycro-secrets)
+    - A secret management hook (using [vault](https://www.vaultproject.io)) for mycro apps
 - [mycro-util-policies](https://github.com/kutllerskaggs/mycro-util-policies)
     - Installs utility polices (if, or, not, validate) for mycro apps
 
