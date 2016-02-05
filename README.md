@@ -96,14 +96,18 @@ To use these hooks, simply install them via `npm install --save <insert hook nam
 
 
 - [mycro-mongoose-rest](https://github.com/cludden/mycro-mongoose-rest)
-    - Creates restful mongoose controllers for your mongoose models using [restify-mongoose](https://github.com/saintedlama/restify-mongoose)
+    - Creates RESTful mongoose controllers for your mongoose models using [restify-mongoose](https://github.com/saintedlama/restify-mongoose)
+- [mycro-util-policies](https://github.com/kutllerskaggs/mycro-util-policies)
+    - Installs utility polices (if, or, not, validate) for mycro apps
 
 
 **Adapters**
 
 
 - [mycro-mongoose](https://github.com/cludden/mycro-mongoose)
-    - mongoose adapter
+    - mongoose (MongoDB) adapter
+- [mycro-vogels](https://github.com/cludden/mycro-vogels)
+    - vogels (DynamoDB) adapter.
 
 
 ## Testing
