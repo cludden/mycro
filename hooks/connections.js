@@ -27,6 +27,16 @@ module.exports = function Connections(cb) {
             return fn('Invalid adapter api. Adapters should define a `registerConnection` method that accepts a config object and callback function');
         }
 
+        // allow for dynamic connection config at hook runtime
+        if (_.isFunction(connectionInfo.config)) {
+            try {
+                connectionInfo.config = connectionInfo.config(self);
+            } catch (e) {
+                /* istanbul ignore next */
+                return fn(e);
+            }
+        }
+
         adapter.registerConnection(connectionInfo.config, function(err, connection) {
             if (err) {
                 return fn('There was an error creating the connection (' + connectionName + ')');
