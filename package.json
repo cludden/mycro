@@ -1,6 +1,6 @@
 {
   "name": "mycro",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "a restify.js based microservice library, inspired by sails.js",
   "main": "index.js",
   "scripts": {
