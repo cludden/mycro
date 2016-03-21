@@ -11,7 +11,7 @@ module.exports = function(cb) {
         return cb();
     }
 
-    var port = parseInt(mycro._config.server.port || process.env.PORT);
+    var port = mycro._config.server.port || process.env.PORT;
     if (isNaN(port)) {
         mycro.log('info', 'port is not a number', port);
     }
