@@ -13,4 +13,10 @@ describe('[hook] controllers', function() {
         expect(mycro.controllers['blog/posts']).to.exist;
         expect(mycro.controllers['blog/posts'].create).to.be.a('function');
     });
+
+    it('should allow controllers to be implemented as functions that accept the mycro instance', function() {
+        expect(mycro.controllers.greet).to.exist;
+        expect(mycro.controllers.greet.hello).to.be.a('function');
+        expect(mycro.controllers.greet.goodbye).to.be.a('function');
+    });
 });

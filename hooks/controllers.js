@@ -16,6 +16,13 @@ module.exports = function Controllers(cb) {
         optional:  true
     });
 
+    controllers = _.mapValues(controllers, function(constructor) {
+        if (typeof constructor === 'function') {
+            return constructor(self);
+        }
+        return constructor;
+    });
+
     _.extend(self.controllers, controllers);
     cb();
 };

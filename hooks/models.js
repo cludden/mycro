@@ -64,8 +64,10 @@ module.exports = function Models(cb) {
                 };
                 if (adapter.registerModel.length === 3) {
                     return adapter.registerModel(connectionInfo.connection, modelDefinition, registerModelCallback);
-                } else {
+                } else if (adapter.registerModel.length === 4) {
                     return adapter.registerModel(connectionInfo.connection, modelDefinition, name, registerModelCallback);
+                } else {
+                    return adapter.registerModel(connectionInfo.connection, modelDefinition, name, mycro, registerModelCallback);
                 }
             }, fn);
         },
