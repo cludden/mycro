@@ -7,7 +7,7 @@ var expect = require('chai').expect,
     _ = require('lodash');
 
 describe('[hook] models', function() {
-    var adapter;
+    var adapter, adapter2, adapter3;
 
     before(function() {
         adapter = {
@@ -42,6 +42,26 @@ describe('[hook] models', function() {
                 }
             }
         };
+        adapter2 = _.extend(_.cloneDeep(adapter), {
+            registerModel: function(connection, definition, name, cb) {
+                try {
+                    var model = definition(connection);
+                    return cb(null, model);
+                } catch (e) {
+                    return cb(e);
+                }
+            }
+        });
+        adapter3 = _.extend(_.cloneDeep(adapter), {
+            registerModel: function(connection, definition, name, mycro, cb) {
+                try {
+                    var model = definition(connection);
+                    return cb(null, model);
+                } catch (e) {
+                    return cb(e);
+                }
+            }
+        });
     });
 
     it('should not return an error if no models are defined', function(done) {
@@ -211,6 +231,46 @@ describe('[hook] models', function() {
             process.chdir(cwd);
             adapter.processModels.restore();
             expect(err).to.exist;
+            done();
+        });
+    });
+
+    it('should allow adapters\' `registerModel` hook to accept an optional name argument', function(done) {
+        var cwd = process.cwd();
+        process.chdir(__dirname + '/models/test-app-missing-adapter');
+
+        var _mycro = new Mycro({
+            connections: {
+                one: {
+                    adapter: adapter2,
+                    config: {}
+                }
+            }
+        });
+
+        _mycro.start(function(err) {
+            process.chdir(cwd);
+            expect(err).to.not.exist;
+            done();
+        });
+    });
+
+    it('should allow adapters\' `registerModel` hook to accept an optional name and mycro argument', function(done) {
+        var cwd = process.cwd();
+        process.chdir(__dirname + '/models/test-app-missing-adapter');
+
+        var _mycro = new Mycro({
+            connections: {
+                one: {
+                    adapter: adapter3,
+                    config: {}
+                }
+            }
+        });
+
+        _mycro.start(function(err) {
+            process.chdir(cwd);
+            expect(err).to.not.exist;
             done();
         });
     });
