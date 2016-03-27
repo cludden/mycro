@@ -391,6 +391,31 @@ describe('[hook] routes', function() {
     });
 
 
+    it('should look for an `index` method if no `actionName` is specified', function(done) {
+        asyncjs.parallel([
+            function(fn) {
+                request.get('/api/say')
+                    .set('x-user-id', 1)
+                    .expect(200)
+                    .expect(function(res) {
+                        expect(res.body).to.have.property('message', 'Hello from the index method!');
+                    })
+                    .end(fn);
+            },
+
+            function(fn) {
+                request.get('/api/blog')
+                    .set('x-user-id', 1)
+                    .expect(200)
+                    .expect(function(res) {
+                        expect(res.body).to.have.property('message', 'Hello from blog/posts.index!');
+                    })
+                    .end(fn);
+            }
+        ], done);
+    });
+
+
     context('coverage tests', function() {
         it('should return an error if an invalid route definition is defined', function(done) {
             var cwd = process.cwd();

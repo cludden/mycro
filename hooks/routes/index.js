@@ -234,8 +234,12 @@ module.exports = {
 
     processStringHandler: function(mycro, handler, cb) {
         var pieces = handler.split('.');
-        if (pieces.length !== 2) {
-            return cb('Unable to process string handler. Must be in format `controllerName.actionName`');
+        if (pieces.length > 2) {
+            return cb('Unable to process string handler. Must be in format `controllerName[.actionName]`');
+        }
+        // if no `actionName` specified, default to 'index'
+        if (pieces.length < 2) {
+            pieces.push('index');
         }
         var controller = mycro.controllers[pieces[0]];
         if (!controller) {

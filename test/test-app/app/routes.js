@@ -16,6 +16,9 @@ module.exports = function(mycro) {
                 ],
                 // define sub-path
                 '/admin': 'admin', // mount `admin` routes at this path (/app/routes/admin.js)
+                '/blog': {
+                    get: 'blog/posts'
+                },
                 '/groups': {
                     // `req.options` can be augmented at sub-paths
                     //      console.log(req.options) => {desc: 'welcome to the api v1.0.0', model: 'groups'}
@@ -57,6 +60,7 @@ module.exports = function(mycro) {
                     get: 'auth.logout'
                 },
                 '/say': {
+                    get: 'greet',
                     '/hello/(\\w+)': {
                         regex: true,
                         get: 'greet.hello',
