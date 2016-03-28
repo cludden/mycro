@@ -8,6 +8,10 @@ module.exports = function(mycro) {
 
         hello: function(req, res) {
             res.json(200, {message: 'Hello ' + req.params[0] + '!'});
+        },
+
+        index: function(req, res) {
+            res.json(200, {message: 'Hello from the index method!'});
         }
     };
 };
