@@ -40,7 +40,7 @@ var Mycro = function(config) {
     });
     userConfig = _.mapValues(userConfig, function(constructor) {
         if (typeof constructor === 'function') {
-            return constructor();
+            return constructor(self);
         }
         return constructor;
     });
