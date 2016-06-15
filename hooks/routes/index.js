@@ -68,7 +68,7 @@ module.exports = {
 
             // bind routes defined at the current level
             routes: ['options', function bindRoutes(fn, r) {
-                asyncjs.each(['del', 'get', 'head', 'post', 'put'], function(verb, _fn) {
+                asyncjs.each(['del', 'get', 'head', 'patch', 'post', 'put'], function(verb, _fn) {
                     if (r.definition[verb]) {
                         var routeOptions = _.cloneDeep(options);
                         return self.handleRoute(mycro, verb, options.currentPath, r.definition[verb], routeOptions, _fn);
