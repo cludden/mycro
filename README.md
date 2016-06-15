@@ -95,6 +95,10 @@ module.exports = function myHook(done) {
 To use these hooks, simply install them via `npm install --save <insert hook name here>` and require them in your `config/hooks.js` file.
 
 
+- [mycro-error](https://github.com/cludden/mycro-error)
+    - Installs an error service that provides common error handling implementations
+- [mycro-json-api-ify](https://github.com/kutlerskaggs/mycro-json-api-ify)
+    - Installs a json service that exports a [json-api-ify] serializer
 - [mycro-mongoose-rest](https://github.com/cludden/mycro-mongoose-rest)
     - Creates RESTful mongoose controllers for your mongoose models using [restify-mongoose](https://github.com/saintedlama/restify-mongoose)
 - [mycro-secrets](https://github.com/cludden/mycro-secrets)
@@ -108,6 +112,8 @@ To use these hooks, simply install them via `npm install --save <insert hook nam
 
 - [mycro-mongoose](https://github.com/cludden/mycro-mongoose)
     - mongoose (MongoDB) adapter
+- [mycro-sequelize](https://github.com/cludden/mycro-sequelize)
+    - sequelize (PostgreSQL, MySQL, MSSQL, SQLite) adapter
 - [mycro-vogels](https://github.com/cludden/mycro-vogels)
     - vogels (DynamoDB) adapter.
 
@@ -133,5 +139,5 @@ grunt coverage
 
 
 ## License
-Copyright (c) 2015 Chris Ludden.
+Copyright (c) 2016 Chris Ludden.
 Licensed under the [MIT license](LICENSE.md).
