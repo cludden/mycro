@@ -5,7 +5,8 @@ var asyncjs = require('async'),
     expect = require('chai').expect,
     Mycro = require('../../index'),
     sinon = require('sinon'),
-    supertest = require('supertest');
+    supertest = require('supertest'),
+    _ = require('lodash');
 
 describe('[hook] routes', function() {
     var request;
@@ -600,6 +601,37 @@ describe('[hook] routes', function() {
                 expect(err).to.exist;
                 done();
             });
+        });
+
+        it('should support PATCH requests', function(done) {
+            var cwd = process.cwd();
+            process.chdir(__dirname + '/routes/test-app-patch');
+
+            var _mycro = new Mycro({
+                server: {
+                    port: 8081
+                },
+                hooks: ['server', 'controllers', 'routes']
+            });
+
+            asyncjs.waterfall([
+                function(fn) {
+                    _mycro.start(function(err) {
+                        process.chdir(cwd);
+                        var e = _.attempt(function() {
+                            expect(err).to.not.exist;
+                        });
+                        fn(e);
+                    });
+                },
+
+                function(fn) {
+                    var req = supertest.agent(_mycro.server);
+                    req.patch('/test')
+                    .expect(200)
+                    .end(fn);
+                }
+            ], done);
         });
     });
 });
