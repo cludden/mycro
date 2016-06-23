@@ -7,7 +7,9 @@ var asyncjs = require('async'),
 
 module.exports = function Models(cb) {
     var mycro = this;
-    mycro.models = {};
+    if (!_.isObject(mycro.models)) {
+        mycro.models = {};
+    }
 
     var modelDefinitions = include({
         dirname: process.cwd() + '/app/models',

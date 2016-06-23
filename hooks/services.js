@@ -5,7 +5,9 @@ var include = require('include-all'),
 
 module.exports = function Services(cb) {
     var self = this;
-    self.services = {};
+    if (!_.isObject(self.services)) {
+        self.services = {};
+    }
 
     var services = include({
         dirname:  process.cwd() + '/app/services',
