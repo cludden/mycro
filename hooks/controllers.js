@@ -5,7 +5,9 @@ var include = require('include-all'),
 
 module.exports = function Controllers(cb) {
     var self = this;
-    self.controllers = {};
+    if (!_.isObject(self.controllers)) {
+        self.controllers = {};
+    }
 
     var controllers = include({
         dirname:  process.cwd() + '/app/controllers',

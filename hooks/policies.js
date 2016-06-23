@@ -5,7 +5,9 @@ var include = require('include-all'),
 
 module.exports = function Policies(cb) {
     var self = this;
-    self.policies = {};
+    if (!_.isObject(self.policies)) {
+        self.policies = {};
+    }
 
     var policies = include({
         dirname:  process.cwd() + '/app/policies',
