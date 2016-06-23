@@ -6,7 +6,9 @@ var asyncjs = require('async'),
 
 module.exports = function Connections(cb) {
     var self = this;
-    self.connections = {};
+    if (!_.isObject(self.connections)) {
+        self.connections = {};
+    }
 
     var connections = _.keys(this._config.connections);
     if (!connections.length) {
