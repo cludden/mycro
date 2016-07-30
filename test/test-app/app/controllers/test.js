@@ -2,17 +2,6 @@
 
 module.exports = {
     /**
-     * Return all queryParams and bodyParams inside `all` attribute
-     *
-     * @param  {Request} req
-     * @param  {Response} res
-     */
-    allParams: function(req, res) {
-        res.json(200, {all: req.allParams()});
-    },
-
-
-    /**
      * Return body params wrapped inside `params` attribute
      *
      * @param  {Request} req

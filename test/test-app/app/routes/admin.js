@@ -1,9 +1,10 @@
 'use strict';
 
 module.exports = function(mycro) {
+    const policies = mycro.policies;
     return {
         additionalPolicies: [
-            mycro.policies['member-of']('admins')
+            policies.memberOf('admins')
         ],
         '/cache': {
             '/clear': {

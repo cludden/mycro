@@ -1,13 +1,17 @@
 'use strict';
 
-var include = require('include-all'),
-    _ = require('lodash');
+const async = require('async');
+const include = require('include-all');
+const _ = require('lodash');
 
-module.exports = function Services(cb) {
-    var self = this;
-    self.services = {};
+module.exports = function services(done) {
+    const mycro = this;
 
-    var services = include({
+    if (!_.isObject(mycro.services)) {
+        mycro.services = {};
+    }
+
+    let services = include({
         dirname:  process.cwd() + '/app/services',
         filter:  /(.+)\.js$/,
         excludeDirs:  /^\.(git|svn)$/,
@@ -16,13 +20,14 @@ module.exports = function Services(cb) {
         optional: true
     });
 
-    services = _.mapValues(services, function(constructor) {
-        if (typeof constructor === 'function') {
-            return constructor(self);
+    services = _.mapValues(services, function(cnt) {
+        if (typeof cnt === 'function') {
+            return cnt(mycro);
         }
-        return constructor;
+        return cnt;
     });
 
-    _.extend(self.services, services);
-    cb();
+    _.extend(mycro.services, services);
+
+    async.setImmediate(done);
 };

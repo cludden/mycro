@@ -1,17 +1,16 @@
-/* jshint expr:true */
 'use strict';
 
-var chai = require('chai'),
-    sinonChai = require('sinon-chai'),
-    expect = chai.expect;
+const chai = require('chai');
+const sinonChai = require('sinon-chai');
+const expect = chai.expect;
 
 chai.use(sinonChai);
 
 before(function(done) {
     process.chdir(__dirname + '/test-app');
 
-    var Mycro = require('../'),
-        mycro = new Mycro();
+    const Mycro = require('../');
+    const mycro = new Mycro();
     global['mycro'] = mycro;
 
     mycro.start(function(err) {

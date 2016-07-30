@@ -3,9 +3,6 @@
 module.exports = function() {
     return {
         policies: [],
-        '/all': {
-            post: 'test.allParams'
-        },
         '/body': {
             post: 'test.bodyParser'
         },

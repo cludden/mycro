@@ -1,12 +1,12 @@
 /* jshint expr:true */
 'use strict';
 
-var asyncjs = require('async'),
-    expect = require('chai').expect,
-    Mycro = require('../../index'),
-    sinon = require('sinon'),
-    supertest = require('supertest'),
-    _ = require('lodash');
+var asyncjs = require('async');
+var expect = require('chai').expect;
+var Mycro = require('../../index');
+var sinon = require('sinon');
+var supertest = require('supertest');
+var _ = require('lodash');
 
 describe('[hook] routes', function() {
     var request;
@@ -167,35 +167,60 @@ describe('[hook] routes', function() {
                 request.get('/api/groups')
                     .set('x-user-id', 2)
                     .expect(403)
-                    .end(fn);
+                    .end(function(err, res) {
+                        if (err) {
+                            console.error(res.body);
+                        }
+                        fn(err);
+                    });
             },
 
             subpathSuccess: function(fn) {
                 request.get('/api/groups')
                     .set('x-user-id', 1)
                     .expect(200)
-                    .end(fn);
+                    .end(function(err, res) {
+                        if (err) {
+                            console.error(res.body);
+                        }
+                        fn(err);
+                    });
             },
 
             routeError: function(fn) {
                 request.get('/api/users/1')
                     .set('x-user-id', 3)
                     .expect(403)
-                    .end(fn);
+                    .end(function(err, res) {
+                        if (err) {
+                            console.error(res.body);
+                        }
+                        fn(err);
+                    });
             },
 
             routeSuccessIsEqual: function(fn) {
                 request.get('/api/users/2')
                     .set('x-user-id', 2)
                     .expect(200)
-                    .end(fn);
+                    .end(function(err, res) {
+                        if (err) {
+                            console.error(res.body);
+                        }
+                        fn(err);
+                    });
             },
 
             routeSuccessAbleTo: function(fn) {
                 request.get('/api/users/2')
                     .set('x-user-id', 1)
                     .expect(200)
-                    .end(fn);
+                    .end(function(err, res) {
+                        if (err) {
+                            console.error(res.body);
+                        }
+                        fn(err);
+                    });
             }
         }, done);
     });

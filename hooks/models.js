@@ -1,15 +1,18 @@
 'use strict';
 
-var asyncjs = require('async'),
-    include = require('include-all'),
-    lib = require('./models/index'),
-    _ = require('lodash');
+const async = require('async');
+const include = require('include-all');
+const lib = require('./models/index');
+const _ = require('lodash');
 
-module.exports = function Models(cb) {
-    var mycro = this;
-    mycro.models = {};
+module.exports = function models(done) {
+    const mycro = this;
 
-    var modelDefinitions = include({
+    if (!_.isObject(mycro.models)) {
+        mycro.models = {};
+    }
+
+    const modelDefinitions = include({
         dirname: process.cwd() + '/app/models',
         filter:  /(.+)\.js$/,
         keepDirectoryPath: true,
@@ -17,25 +20,25 @@ module.exports = function Models(cb) {
         optional:  true
     });
 
-    var modelNames = _.keys(modelDefinitions);
+    const modelNames = _.keys(modelDefinitions);
     if (!modelNames || !modelNames.length) {
-        return cb();
+        return async.setImmediate(done);
     }
 
-    var defaultConnection = _.find(mycro.connections, function(config) {
+    const defaultConnection = _.find(mycro.connections, function(config) {
         return config.default === true;
     });
 
-    asyncjs.auto({
+    async.auto({
         // hand model definitions to the appropriate adapter for construction
         build: function(fn) {
-            asyncjs.each(modelNames, function(name, _fn) {
+            async.each(modelNames, function(name, _fn) {
                 // get model definition
-                var modelDefinition = modelDefinitions[name];
+                const modelDefinition = modelDefinitions[name];
                 modelDefinition.__name = name;
 
                 // get connection info
-                var connectionInfo = lib.findConnection(mycro, name);
+                let connectionInfo = lib.findConnection(mycro, name);
                 if (!connectionInfo) {
                     mycro.log('silly', '[models] Unable to find explicit adapter for model (' + name + ')');
                     if (!defaultConnection ) {
@@ -46,13 +49,13 @@ module.exports = function Models(cb) {
                 }
 
                 // validate handler exists
-                var adapter = connectionInfo.adapter;
+                const adapter = connectionInfo.adapter;
                 if (!adapter.registerModel || !_.isFunction(adapter.registerModel) || adapter.registerModel.length < 3) {
                     return _fn('Invalid adapter api: adapters should define a `registerModel` method that accepts a connection object, model definition object, and a callback');
                 }
 
                 // hand off to adapter
-                var registerModelCallback = function(err, model) {
+                const registerModelCallback = function(err, model) {
                     if (err) {
                         return _fn(err);
                     }
@@ -60,8 +63,9 @@ module.exports = function Models(cb) {
                         return _fn('No model (' + name + ') returned from `adapter.registerModel`');
                     }
                     mycro.models[name] = model;
-                    _fn();
+                    async.setImmediate(_fn);
                 };
+
                 if (adapter.registerModel.length === 3) {
                     return adapter.registerModel(connectionInfo.connection, modelDefinition, registerModelCallback);
                 } else if (adapter.registerModel.length === 4) {
@@ -75,16 +79,16 @@ module.exports = function Models(cb) {
         // once all models have been built, allow each adapter the opportunity to
         // do additional processing
         process: ['build', function(fn) {
-            var adapters = _.values(mycro.connections).map(function(connectionInfo) {
+            const adapters = _.values(mycro.connections).map(function(connectionInfo) {
                 return connectionInfo.adapter;
             });
 
-            asyncjs.each(adapters, function(adapter, _fn) {
+            async.each(adapters, function(adapter, _fn) {
                 if (!adapter || !_.isFunction(adapter.processModels)) {
                     return _fn();
                 }
                 adapter.processModels(mycro.models, modelDefinitions, _fn);
             }, fn);
         }]
-    }, cb);
+    }, done);
 };

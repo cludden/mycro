@@ -1,5 +1,0 @@
-{
-    "node": true,
-    "sub": true,
-    "predef": ["describe", "after", "afterEach", "before", "beforeEach", "context", "it", "mycro"]
-}

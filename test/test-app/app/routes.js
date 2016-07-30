@@ -1,6 +1,7 @@
 'use strict';
 
 module.exports = function(mycro) {
+    const policies = mycro.policies;
     return {
         // define version for all paths
         'v1.0.0': {
@@ -28,7 +29,7 @@ module.exports = function(mycro) {
                     // define additional policies to add to the policy chain for path and sub-paths
                     additionalPolicies: [
                         // policies can also be factory functions
-                        mycro.policies['able-to']('manage', 'groups')
+                        policies.ableTo('manage', 'groups')
                     ],
                     // mount `rest` routes at this sub-path (/app/routes/rest.js)
                     routes: 'rest'
@@ -50,7 +51,7 @@ module.exports = function(mycro) {
                         model: 'permissions'
                     },
                     additionalPolicies: [
-                        mycro.policies['member-of']('admins')
+                        policies.memberOf('admins')
                     ],
                     // routes can be reused, while also changing the policy chain and request options
                     routes: 'rest'
@@ -99,31 +100,31 @@ module.exports = function(mycro) {
                         del: {
                             // define additional policies to add to the policy chain for this route
                             additionalPolicies: [
-                                mycro.policies['member-of']('admins')
+                                policies.memberOf('admins')
                             ],
                             handler: 'rest.remove'
                         },
                         get: {
                             additionalPolicies: [
-                                mycro.policies['or'](
-                                    mycro.policies['is-equal']('user.id', 'params.id'),
-                                    mycro.policies['able-to']('manage', 'users')
+                                policies.or(
+                                    policies.isEqual('user.id', 'params.id'),
+                                    policies.ableTo('manage', 'users')
                                 )
                             ],
                             handler: 'rest.detail'
                         },
                         put: {
                             additionalPolicies: [
-                                mycro.policies['or'](
-                                    mycro.policies['is-equal']('user.id', 'params.id'),
-                                    mycro.policies['able-to']('manage', 'users')
+                                policies.or(
+                                    policies.isEqual('user.id', 'params.id'),
+                                    policies.ableTo('manage', 'users')
                                 ),
-                                mycro.policies['if'](
-                                    mycro.policies['not'](
-                                        mycro.policies['able-to']('manage', 'users')
+                                policies.if(
+                                    policies.not(
+                                        policies.ableTo('manage', 'users')
                                     ),
-                                    mycro.policies['blacklist']('id', 'email', 'last', 'mobile'),
-                                    mycro.policies['blacklist']('id')
+                                    policies.blacklist('id', 'email', 'last', 'mobile'),
+                                    policies.blacklist('id')
                                 )
                             ],
                             handler: 'rest.update'

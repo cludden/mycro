@@ -1,13 +1,17 @@
 'use strict';
 
-var include = require('include-all'),
-    _ = require('lodash');
+const async = require('async');
+const include = require('include-all');
+const _ = require('lodash');
 
-module.exports = function Policies(cb) {
-    var self = this;
-    self.policies = {};
+module.exports = function policies(done) {
+    const mycro = this;
 
-    var policies = include({
+    if (!_.isObject(mycro.policies)) {
+        mycro.policies = {};
+    }
+
+    let policies = include({
         dirname:  process.cwd() + '/app/policies',
         filter:  /(.+)\.js$/,
         excludeDirs:  /^\.(git|svn)$/,
@@ -16,6 +20,15 @@ module.exports = function Policies(cb) {
         optional:  true
     });
 
-    _.extend(self.policies, policies);
-    cb();
+    policies = _.mapValues(policies, function(policy) {
+        if (policy.length === 1) {
+            return policy(mycro);
+        } else {
+            return policy();
+        }
+    });
+
+    _.extend(mycro.policies, policies);
+
+    return async.setImmediate(done);
 };

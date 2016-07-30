@@ -25,7 +25,12 @@ describe('GET /api/admin/cache/clear', function() {
             .expect(function(res) {
                 expect(res.body.error).to.equal('user is not a member of group (admins)');
             })
-            .end(done);
+            .end(function(err, res) {
+                if (err) {
+                    console.error(res.body);
+                }
+                done(err);
+            });
     });
 
 

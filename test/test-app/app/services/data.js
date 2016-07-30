@@ -1,11 +1,11 @@
 'use strict';
 
-var Baobab = require('baobab'),
-    include = require('include-all'),
-    _ = require('lodash');
+const Baobab = require('baobab');
+const include = require('include-all');
+const _ = require('lodash');
 
 module.exports = function() {
-    var models = include({
+    const models = include({
         dirname:  __dirname + '/../fixtures',
         filter:  /(.+)\.js$/,
         excludeDirs:  /^\.(git|svn)$/,
@@ -14,7 +14,7 @@ module.exports = function() {
         optional:  true
     });
 
-    var db = new Baobab(models);
+    const db = new Baobab(models);
 
     return {
         create: function(model, values, cb) {
@@ -28,7 +28,7 @@ module.exports = function() {
 
         detail: function(model, id, cb) {
             try {
-                var record = db.select(model, {id: id}).get();
+                const record = db.select(model, {id: id}).get();
                 return cb(null, record);
             } catch (e) {
                 cb(e);
@@ -37,8 +37,8 @@ module.exports = function() {
 
         find: function(model, criteria, cb) {
             try {
-                var records = db.select(model).get();
-                records = _.where(records, criteria);
+                let records = db.select(model).get();
+                records = _.filter(records, criteria);
                 return cb(null, records);
             } catch (e) {
                 cb(e);
@@ -47,11 +47,11 @@ module.exports = function() {
 
         remove: function(model, id, cb) {
             try {
-                var i = _.findIndex(db.select(model).get(), {id: id});
+                const i = _.findIndex(db.select(model).get(), {id: id});
                 if (i === -1) {
                     return cb();
                 }
-                var removed = db.select(model).splice([i, 1]);
+                const removed = db.select(model).splice([i, 1]);
                 return cb(null, removed);
             } catch (e) {
                 cb(e);
@@ -60,12 +60,12 @@ module.exports = function() {
 
         update: function(model, id, values, cb) {
             try {
-                var i = _.findIndex(db.select(model).get(), {id: id});
+                const i = _.findIndex(db.select(model).get(), {id: id});
                 if (i === -1) {
                     return cb();
                 }
-                var instance = db.select(model, i).get();
-                var updated = _.extend(_.clone(instance), values);
+                const instance = db.select(model, i).get();
+                const updated = _.extend(_.clone(instance), values);
                 db.set([model, i], updated);
                 return cb(null, updated);
             } catch (e) {

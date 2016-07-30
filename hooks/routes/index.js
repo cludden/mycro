@@ -1,9 +1,9 @@
 'use strict';
 
-var asyncjs = require('async'),
-    joi = require('joi'),
-    pathToRegex = require('path-to-regexp'),
-    _ = require('lodash');
+var asyncjs = require('async');
+var joi = require('joi');
+var pathToRegex = require('path-to-regexp');
+var _ = require('lodash');
 
 module.exports = {
     /**
@@ -180,13 +180,12 @@ module.exports = {
                 // define the base policy chain with a single function that
                 // defines the request options
                 var policyChain = [
-                    {
-                        path: path,
-                        version: options.version
-                    },
+                    { path: path, version: options.version },
                     function(req, res, next) {
                         /* istanbul ignore next */
-                        req.options = req.options || {};
+                        if (typeof req.options !== 'object') {
+                            req.options = {};
+                        }
                         _.extend(req.options, options.defaultOptions);
                         next();
                     }
@@ -196,13 +195,13 @@ module.exports = {
                 policyChain.push(r.handler);
 
                 // process string policies
-                var policyError;
+                let policyError;
                 policyChain = policyChain.map(function(handler) {
                     if (_.isFunction(handler)) {
                         return handler;
                     }
                     if (_.isString(handler)) {
-                        var policy = mycro.policies[handler];
+                        const policy = mycro.policies[handler];
                         if (!policy || !_.isFunction(policy)) {
                             policyError = 'Unable to locate function policy for ' + handler;
                             return false;

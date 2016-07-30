@@ -1,10 +1,10 @@
 /* jshint expr:true */
 'use strict';
 
-var expect = require('chai').expect,
-    Mycro = require('../../index'),
-    sinon = require('sinon'),
-    _ = require('lodash');
+var expect = require('chai').expect;
+var Mycro = require('../../index');
+var sinon = require('sinon');
+var _ = require('lodash');
 
 describe('[hook] models', function() {
     var adapter, adapter2, adapter3;

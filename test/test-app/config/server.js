@@ -16,8 +16,6 @@ module.exports = {
         },
         function morgan() {
             return require('morgan')('dev');
-        },
-        'request',
-        'request-all-params'
+        }
     ]
 };

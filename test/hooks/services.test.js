@@ -1,9 +1,9 @@
 /* jshint expr:true */
 'use strict';
 
-var chai = require('chai'),
-    sinon = require('sinon'),
-    expect = chai.expect;
+var chai = require('chai');
+var sinon = require('sinon');
+var expect = chai.expect;
 
 describe('[hook] services', function() {
 

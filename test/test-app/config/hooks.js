@@ -3,7 +3,7 @@
 module.exports = [
     'connections',
     'models',
-    'server',
+    'restify',
     'services',
     'policies',
     'controllers',
@@ -12,5 +12,6 @@ module.exports = [
         var mycro = this;
         mycro.log('silly', 'controllers:', mycro.controllers.length);
         cb();
-    }
+    },
+    'start'
 ];

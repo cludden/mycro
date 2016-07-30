@@ -1,25 +1,37 @@
 'use strict';
 
-var include = require('include-all'),
-    _ = require('lodash');
+const async = require('async');
+const include = require('include-all');
+const lib = require('./routes/index');
+const _ = require('lodash');
 
-module.exports = function restify_mycro_nested_routes(cb) {
-    return module.exports.hook.call(this, cb);
+/**
+ * Separate hook from export for stubbing in tests.
+ * @param  {Function} cb
+ * @this mycro
+ */
+module.exports = function routes(done) {
+    return module.exports.hook.call(this, done);
 };
 
-module.exports.hook = function(cb) {
-    var mycro = this;
+module.exports.hook = function(done) {
+    const mycro = this;
+    const defaultVersion = mycro._config.server.version || '1.0.0';
+    let definition;
 
-    var definition;
     try {
         definition = require(process.cwd() + '/app/routes');
-        if (_.isFunction(definition)) definition = definition(mycro);
+        if (_.isFunction(definition)) {
+            definition = definition(mycro);
+        }
     } catch (err) {
         mycro.log('info', '[Routes] no routes found');
-        return cb(err);
+        return async.setImmediate(function() {
+            done(err);
+        });
     }
 
-    var routes = include({
+    const routes = include({
         dirname:  process.cwd() + '/app/routes',
         filter:  /(.+)\.js$/,
         excludeDirs:  /^\.(git|svn)$/,
@@ -28,14 +40,18 @@ module.exports.hook = function(cb) {
         optional:  true
     });
 
-    var defaultVersion = mycro._config.server.version || '1.0.0';
+    _.mapValues(routes, function(route) {
+        if (_.isFunction(route)) {
+            return route(mycro);
+        }
+        return route;
+    });
 
-    var lib = require('./routes/index');
     lib.handleDefinition(mycro, {
         currentPath: '',
         definition: definition,
         regexPathDefinition: '',
         routes: routes,
         version: defaultVersion
-    }, cb);
+    }, done);
 };

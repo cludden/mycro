@@ -1,13 +1,17 @@
 'use strict';
 
-var include = require('include-all'),
-    _ = require('lodash');
+const async = require('async');
+const include = require('include-all');
+const _ = require('lodash');
 
-module.exports = function Controllers(cb) {
-    var self = this;
-    self.controllers = {};
+module.exports = function controllers(done) {
+    const mycro = this;
 
-    var controllers = include({
+    if (!_.isObject(mycro.controllers)) {
+        mycro.controllers = {};
+    }
+
+    let controllers = include({
         dirname:  process.cwd() + '/app/controllers',
         filter:  /(.+)\.js$/,
         excludeDirs:  /^\.(git|svn)$/,
@@ -16,13 +20,14 @@ module.exports = function Controllers(cb) {
         optional:  true
     });
 
-    controllers = _.mapValues(controllers, function(constructor) {
-        if (typeof constructor === 'function') {
-            return constructor(self);
+    controllers = _.mapValues(controllers, function(cnt) {
+        if (typeof cnt === 'function') {
+            return cnt(mycro);
         }
-        return constructor;
+        return cnt;
     });
 
-    _.extend(self.controllers, controllers);
-    cb();
+    _.extend(mycro.controllers, controllers);
+
+    async.setImmediate(done);
 };

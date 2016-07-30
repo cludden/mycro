@@ -1,8 +1,8 @@
 /* jshint expr:true */
 'use strict';
 
-var expect = require('chai').expect,
-    sinon = require('sinon');
+var expect = require('chai').expect;
+var sinon = require('sinon');
 
 describe('[hook] connections', function() {
     it('should not return an error if no connections are defined', function(done) {

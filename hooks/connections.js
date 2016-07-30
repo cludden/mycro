@@ -1,23 +1,26 @@
 'use strict';
 
-var asyncjs = require('async'),
-    pathToRegex = require('path-to-regexp'),
-    _ = require('lodash');
+const async = require('async');
+const pathToRegex = require('path-to-regexp');
+const _ = require('lodash');
 
-module.exports = function Connections(cb) {
-    var self = this;
-    self.connections = {};
+module.exports = function connections(done) {
+    const mycro = this;
+    const connections = _.keys(this._config.connections);
 
-    var connections = _.keys(this._config.connections);
-    if (!connections.length) {
-        return cb();
+    if (!_.isObject(mycro.connections)) {
+        mycro.connections = {};
     }
 
-    asyncjs.mapLimit(connections, 5, function(connectionName, fn) {
-        var connectionInfo = self._config.connections[connectionName];
+    if (!connections.length) {
+        return async.setImmediate(done);
+    }
+
+    async.mapLimit(connections, 5, function(connectionName, fn) {
+        const connectionInfo = mycro._config.connections[connectionName];
 
         // verify adapter info, be forgiving with spelling
-        var adapter = connectionInfo.adapter;
+        const adapter = connectionInfo.adapter;
         if (!adapter) {
             return fn('Missing adapter for connection: ' + connectionName);
         }
@@ -30,7 +33,7 @@ module.exports = function Connections(cb) {
         // allow for dynamic connection config at hook runtime
         if (_.isFunction(connectionInfo.config)) {
             try {
-                connectionInfo.config = connectionInfo.config(self);
+                connectionInfo.config = connectionInfo.config(mycro);
             } catch (e) {
                 /* istanbul ignore next */
                 return fn(e);
@@ -44,7 +47,7 @@ module.exports = function Connections(cb) {
             if (!connection) {
                 return fn('No connection object was returned by the adapter (' + connectionInfo.adapter + ') for a connection (' + connectionInfo.name + ')');
             }
-            self.connections[connectionName] = {
+            mycro.connections[connectionName] = {
                 adapter: adapter,
                 connection: connection,
                 default: connectionInfo.default || connections.length === 1,
@@ -55,7 +58,6 @@ module.exports = function Connections(cb) {
             fn();
         });
     }, function(err) {
-        if (err) return cb(err);
-        return cb();
+        done(err);
     });
 };

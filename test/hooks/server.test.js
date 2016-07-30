@@ -1,8 +1,7 @@
-/* jshint expr:true */
 'use strict';
 
-var chai = require('chai'),
-    expect = chai.expect;
+const chai = require('chai');
+const expect = chai.expect;
 
 describe('[hook] server', function() {
 
@@ -17,7 +16,7 @@ describe('[hook] server', function() {
 
 
     context('middleware', function() {
-        var request;
+        let request;
 
         before(function() {
             request = require('supertest').agent(mycro.server);
@@ -61,23 +60,6 @@ describe('[hook] server', function() {
                 })
                 .end(done);
         });
-
-
-        it('should load request and request all', function(done) {
-            request.post('/api/test/all?a=yes')
-                .set('Accept-Version', '~1.0.0')
-                .send({
-                    b: 'no'
-                })
-                .expect(200)
-                .expect(function(res) {
-                    expect(res.body.all).to.eql({
-                        a: 'yes',
-                        b: 'no'
-                    });
-                })
-                .end(done);
-        });
     });
 
     context('coverage tests', function() {
@@ -85,20 +67,20 @@ describe('[hook] server', function() {
             var originalDir = process.cwd();
             process.chdir(__dirname + '/../test-app-2');
 
-            var Mycro = require('../../index'),
-                m = new Mycro({
-                    server: {
-                        port: 'abc',
-                        middleware: [
-                            1,
+            var Mycro = require('../../index');
+            var m = new Mycro({
+                server: {
+                    port: 'abc',
+                    middleware: [
+                        1,
                             {}
-                        ]
-                    },
-                    hooks: [
-                        'server',
-                        'routes'
                     ]
-                });
+                },
+                hooks: [
+                    'server',
+                    'routes'
+                ]
+            });
 
             m.start(function(err) {
                 expect(err).to.not.exist;

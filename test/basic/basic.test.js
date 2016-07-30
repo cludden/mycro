@@ -1,8 +1,8 @@
 /* jshint expr:true */
 'use strict';
 
-var expect = require('chai').expect,
-    sinon = require('sinon');
+var expect = require('chai').expect;
+var sinon = require('sinon');
 
 describe('mycro', function() {
     it('should allow config files to access the mycro object', function() {

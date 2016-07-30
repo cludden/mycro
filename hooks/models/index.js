@@ -1,6 +1,6 @@
 'use strict';
 
-var _ = require('lodash');
+const _ = require('lodash');
 
 module.exports = {
     findConnection: function(mycro, modelName) {
@@ -8,7 +8,7 @@ module.exports = {
             if (!config.models.length) {
                 return false;
             }
-            var match = _.find(config.models, function(path) {
+            const match = _.find(config.models, function(path) {
                 return path.test(modelName);
             });
             return match !== undefined;

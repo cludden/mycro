@@ -1,22 +1,25 @@
 'use strict';
 
-module.exports = function(req, res, next) {
-    if (!req.headers['x-user-id']) {
-        var e = 'unauthenticated';
-        res.json(401, {error: e});
-        return next(e);
-    }
-    req.mycro.services['data'].detail('users', parseInt(req.headers['x-user-id']), function(err, user) {
-        if (err) {
-            res.json(500, {error: err});
-            return next(err);
+module.exports = function(mycro) {
+    return function authenticated(req, res, next) {
+        const uid = parseInt(req.headers['x-user-id']);
+        if (isNaN(uid)) {
+            const e = 'unauthenticated';
+            res.json(401, {error: e});
+            return next(e);
         }
-        if (!user) {
-            err = 'no user found with id (' + parseInt(req.headers['x-user-id']) + ')';
-            res.json(500, {error: err});
-            return next(err);
-        }
-        req.user = user;
-        next();
-    });
+        mycro.services['data'].detail('users', uid, function(err, user) {
+            if (err) {
+                res.json(500, {error: err});
+                return next(err);
+            }
+            if (!user) {
+                err = 'no user found with id (' + uid + ')';
+                res.json(500, {error: err});
+                return next(err);
+            }
+            req.user = user;
+            next();
+        });
+    };
 };
