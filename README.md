@@ -2,7 +2,7 @@
 [![Build Status](https://travis-ci.org/cludden/mycro.svg?branch=master)](https://travis-ci.org/cludden/mycro) [![Codacy Badge](https://api.codacy.com/project/badge/grade/5b759953fe0248b1a241bc8700f64e61)](https://www.codacy.com/app/chris-ludden/mycro)
 
 
-a [restify.js](http://restify.com) based microservice library, inspired by [sails.js](http://sailsjs.org)  
+a hook based microservice library, inspired by [sails.js](http://sailsjs.org)
 
 
 ## Install

@@ -4,6 +4,9 @@
         "node": true
     },
     "extends": "eslint:recommended",
+    "plugins": [
+        "lodash-fp"
+    ],
     "rules": {
         "indent": [
             "error",
