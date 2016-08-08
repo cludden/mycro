@@ -1,10 +1,8 @@
 'use strict';
 
-const async = require('async');
-
-module.exports = [
-    function(done) {
-        async.setImmediate(function() {
+export default [
+    function anonymous(done) {
+        process.nextTick(function() {
             done(new Error('something went wrong'));
         });
     }

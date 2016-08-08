@@ -1,6 +1,8 @@
 'use strict';
 
-const Mycro = require('../../../lib');
+import Mycro from '../../../lib';
+
+
 const mycro = new Mycro();
 
-module.exports = mycro;
+export default mycro;

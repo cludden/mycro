@@ -1,9 +1,9 @@
 'use strict';
 
-module.exports = function(mycro) {
+export default function getConfig(mycro) {
     return {
         fn() {
             return mycro.config.test.foo;
         }
     };
-};
+}
