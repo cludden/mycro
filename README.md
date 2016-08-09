@@ -30,17 +30,17 @@ To provide a highly customizable platform for a well-organized [restify.js](http
 ## Getting Started
 The easiest way to get started is to use [yeoman](http://yeoman.io) to generate a new `mycro` project.
 
-1. make sure you have yeoman and the generator installed globally
+make sure you have yeoman and the generator installed globally
 ```bash
 npm install -g yo generator-mycro
 ```
 
-2. create a new project
+create a new project
 ```bash
 yo mycro my-new-project
 ```
 
-3. lastly, switch into your new project directory and start the app
+lastly, switch into your new project directory and start the app
 ```bash
 cd my-new-project
 npm test
@@ -48,19 +48,17 @@ npm test
 
 Or, the long way.
 
-1. make a new project folder, change into it, and initialize a new npm project
+make a new project folder, change into it, and initialize a new npm project
 ```bash
 mkdir my-new-project && cd my-new-project && npm init
 ```
 
-2. install mycro
+install mycro
 ```bash
 npm install --save mycro
 ```
 
-3. create a new app.
-
-
+create a new app.
 ```javascript
 // in /lib/app.js
 import Mycro from 'mycro';
